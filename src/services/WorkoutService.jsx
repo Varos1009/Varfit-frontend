@@ -1,11 +1,16 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/workouts";
+const API_URL = "http://localhost:5000/api/workouts";
 
 // Fetch all workouts
 export const getAllWorkouts = async () => {
-  const response = await axios.get(API_URL);
-  return response.data;
+  try {
+    const response = await axios.get(API_URL);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching workouts:", error);
+  }
 };
 
 // Fetch single workout

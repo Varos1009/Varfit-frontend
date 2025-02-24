@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getAllWorkouts } from "../services/workoutService";
+import { getAllWorkouts } from "../services/WorkoutService";
 
 const WorkoutContext = createContext();
 
@@ -11,14 +11,15 @@ export const WorkoutProvider = ({ children }) => {
     const fetchWorkouts = async () => {
       try {
         const data = await getAllWorkouts();
-        setWorkouts(data);
+        // If the response is an object with a key like 'data', extract the array
+        setWorkouts(data.workouts || data); // Adjust according to your response structure
       } catch (error) {
         console.error("Failed to fetch workouts:", error);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchWorkouts();
   }, []);
 
