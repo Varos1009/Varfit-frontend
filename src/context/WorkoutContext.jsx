@@ -19,12 +19,17 @@ export const WorkoutProvider = ({ children }) => {
         setLoading(false);
       }
     };
-  
+
     fetchWorkouts();
   }, []);
 
+  const updateWorkouts = async () => {
+    const data = await getAllWorkouts();
+    setWorkouts(data);
+  };
+
   return (
-    <WorkoutContext.Provider value={{ workouts, setWorkouts, loading }}>
+    <WorkoutContext.Provider value={{ workouts, setWorkouts, loading, updateWorkouts }}>
       {children}
     </WorkoutContext.Provider>
   );
