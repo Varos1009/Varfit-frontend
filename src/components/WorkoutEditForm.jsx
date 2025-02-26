@@ -59,7 +59,7 @@ const WorkoutEditForm = () => {
 
             setTimeout(() => {
                 navigate("/");
-            }, 500);
+            }, 1800);
         } catch (error) {
             console.error("Error updating workout:", error);
             setError("Error updating workout.");

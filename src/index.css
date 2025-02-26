@@ -7,10 +7,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('./assets/starnight.jpg');
-  background-color: black;
-  background-size: cover;
-  background-repeat: no-repeat;
+  
+  /* Gradient Background - Sunrise Effect */
+  background: linear-gradient(to top, #1b2735, #415a77, #ff9a8b, #ff7eb3);
+  
   background-attachment: fixed;
   min-width: 320px;
   min-height: 100vh;

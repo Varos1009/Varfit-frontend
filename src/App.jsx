@@ -1,6 +1,7 @@
 import React from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { WorkoutProvider } from "./context/WorkoutContext"
+import Navbar from "./components/NavBar"
 import Login from "./pages/Login"
 import SignUp from "./pages/SignUp"
 import Home from "./pages/Home"
@@ -13,6 +14,7 @@ function App() {
   return (
     <WorkoutProvider>
       <BrowserRouter>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
