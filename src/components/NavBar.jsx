@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import VarFitLogo from "./VarFitLogo";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 
 const Navbar = () => {
+    const currentUser = auth.currentUser;
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
 
-    // Handle the logo click to navigate to the homepage and close the hamburger menu
     const handleLogoClick = () => {
-        setIsOpen(false);  // Close the hamburger menu
-        navigate("/");      // Navigate to homepage
+        setIsOpen(false);
+        navigate("/");
     };
 
     return (
         <nav className="bg-white shadow-md z-20 relative">
             <div className="mx-auto flex justify-between items-center p-4">
-                {/* Logo with onClick to close the menu and navigate to the homepage */}
                 <Link
                     to="/"
                     onClick={handleLogoClick}
-                    className="flex items-center z-30"  // Increased z-index
+                    className="flex items-center z-30"
                 >
                     <VarFitLogo />
                 </Link>
@@ -28,14 +29,15 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center space-x-6">
                     <NavLink to="/plan">Plan</NavLink>
                     <NavLink to="/progress">Progress</NavLink>
-                    <NavLink to="/login" isButton>
-                        Login
-                    </NavLink>
+                    {currentUser ? (<NavLink to="/" isButton onClick={() => signOut(auth)}>Logout</NavLink>) :
+                        (<NavLink to="/login" isButton>
+                            Login
+                        </NavLink>)}
                 </div>
 
                 {/* Mobile Menu Button */}
                 <button
-                    className="md:hidden text-gray-700 focus:outline-none z-30" // Increased z-index
+                    className="md:hidden text-gray-700 focus:outline-none z-30"
                     onClick={() => setIsOpen(!isOpen)}
                     aria-label="Toggle navigation"
                 >
@@ -89,8 +91,8 @@ const NavLink = ({ to, children, isButton, onClick, mobile }) => {
             to={to}
             onClick={onClick}
             className={`${isButton
-                    ? "bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
-                    : "text-gray-700 hover:text-red-600 transition"
+                ? "bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition"
+                : "text-gray-700 hover:text-red-600 transition"
                 } font-medium ${mobile ? "block text-center py-4" : ""}`}
         >
             {children}
