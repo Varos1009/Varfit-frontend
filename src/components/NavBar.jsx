@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import VarFitLogo from "./VarFitLogo";
-import { signOut } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
+import { Logout } from "../firebase/auth";
 
 const Navbar = () => {
     const currentUser = auth.currentUser;
@@ -27,9 +27,13 @@ const Navbar = () => {
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-6">
-                    <NavLink to="/plan">Plan</NavLink>
-                    <NavLink to="/progress">Progress</NavLink>
-                    {currentUser ? (<NavLink to="/" isButton onClick={() => signOut(auth)}>Logout</NavLink>) :
+                    {currentUser ? (
+                        <>
+                            <NavLink to="/workouts">Workouts</NavLink>
+                            <NavLink to="/plan">Plan</NavLink>
+                            <NavLink to="/progress">Progress</NavLink>
+                            <NavLink to="/" isButton onClick={() => Logout(auth)}>Logout</NavLink>
+                        </>) :
                         (<NavLink to="/login" isButton>
                             Login
                         </NavLink>)}
@@ -70,15 +74,22 @@ const Navbar = () => {
                     } overflow-hidden bg-white shadow-md absolute top-16 left-0 w-full p-4 space-y-4 z-20`}  // Set z-index to 20 for dropdown
                 aria-hidden={!isOpen}
             >
-                <NavLink to="/plan" onClick={() => setIsOpen(false)} mobile>
-                    Plan
-                </NavLink>
-                <NavLink to="/progress" onClick={() => setIsOpen(false)} mobile>
-                    Progress
-                </NavLink>
-                <NavLink to="/login" isButton onClick={() => setIsOpen(false)} mobile>
-                    Login
-                </NavLink>
+                {currentUser ? (
+                    <>
+                        <NavLink to="/workouts" onClick={() => setIsOpen(false)} mobile>
+                            Workout
+                        </NavLink>
+                        <NavLink to="/plan" onClick={() => setIsOpen(false)} mobile>
+                            Plan
+                        </NavLink>
+                        <NavLink to="/progress" onClick={() => setIsOpen(false)} mobile>
+                            Progress
+                        </NavLink>
+                        <NavLink to="/" isButton onClick={() => Logout(auth)} mobile>Logout</NavLink>
+                    </>) :
+                    (<NavLink to="/login" isButton onClick={() => setIsOpen(false)} mobile>
+                        Login
+                    </NavLink>)}
             </div>
         </nav>
     );
