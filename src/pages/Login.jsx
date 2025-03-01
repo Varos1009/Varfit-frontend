@@ -50,10 +50,6 @@ function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-indigo-600">
-      <div className="absolute top-6 right-6 text-white text-2xl cursor-pointer hover:text-yellow-400" onClick={() => navigate("/")}>
-        ✖
-      </div>
-
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full">
         <h2 className="text-3xl font-bold text-center text-blue-900 mb-6">Login</h2>
 
