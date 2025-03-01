@@ -5,8 +5,8 @@ import WorkoutForm from "../components/WorkoutForm";
 const Workout = () => {
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold text-center mb-6">Workout Tracker</h1>
             <WorkoutForm />
+            <div class="border-t border-dashed border-gray-1000 my-9"></div>
             <WorkoutList />
         </div>
     );

@@ -42,11 +42,10 @@ export const getWorkoutById = async (id) => {
 // Create new workout
 export const createWorkout = async (workoutData) => {
   try {
-    const response = await axios.post(API_URL, workoutData);
-    if (response.data) {
-      return response.data;
-    }
-    throw new Error("Invalid response format");
+    const response = await axios.post(`${API_URL}`, workoutData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
   } catch (error) {
     console.error("Error creating workout:", error);
     throw new Error("Error creating workout");
@@ -55,15 +54,22 @@ export const createWorkout = async (workoutData) => {
 
 // Update a specific workout by ID
 export const updateWorkout = async (id, updatedWorkout) => {
+  if (!updatedWorkout.name || !updatedWorkout.category || !updatedWorkout.duration || !updatedWorkout.difficulty) {
+    throw new Error("All fields (name, category, duration, difficulty) are required.");
+  }
+
   try {
-    const response = await axios.put(`${API_URL}/${id}`, updatedWorkout);
-    if (response.data) {
-      return response.data;
-    }
-    throw new Error("Invalid response format");
+    console.log("Updating workout with ID:", id);
+    console.log("Payload:", updatedWorkout);
+
+    const response = await axios.put(`${API_URL}/${id}`, updatedWorkout, {
+      headers: { "Content-Type": "application/json" }, 
+    });
+
+    return response.data;
   } catch (error) {
-    console.error(`Error updating workout with ID ${id}:`, error);
-    throw new Error("Error updating workout");
+    console.error(`Error updating workout with ID ${id}:`, error.response?.data || error.message);
+    throw new Error(error.response?.data?.error || "Error updating workout");
   }
 };
 

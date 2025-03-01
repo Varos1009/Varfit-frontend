@@ -8,6 +8,7 @@ import LoginPage from "./pages/Login"
 import SignUp from "./pages/SignUp"
 import Workout from "./pages/Workouts"
 import WorkoutEditForm from "./components/WorkoutEditForm"
+import Plan from "./pages/Plan";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/workouts/edit/:id" element={<WorkoutEditForm />} />
+            <Route path="/plan" element={<Plan />} />
           </Routes>
         </BrowserRouter>
       </WorkoutProvider>

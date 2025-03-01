@@ -4,11 +4,14 @@ import { useWorkout } from "../context/WorkoutContext";
 
 const WorkoutForm = () => {
   const { workouts, setWorkouts } = useWorkout();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
   const [formData, setFormData] = useState({
     name: "",
-    category: "strength",
+    category: "Strength",
     duration: "",
-    difficulty: "beginner",
+    difficulty: "Beginner",
   });
 
   const handleChange = (e) => {
@@ -17,64 +20,93 @@ const WorkoutForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Ensure all fields are filled
+    if (!formData.name || !formData.duration) {
+      setError("Please fill out all fields.");
+      return;
+    }
+  
+    const newWorkout = {
+      name: formData.name.trim(), // Trim spaces
+      category: formData.category || "Strength",
+      duration: Number(formData.duration), // Ensure it's a number
+      difficulty: formData.difficulty || "Beginner",
+    };
+  
     try {
-      const newWorkout = await createWorkout(formData);
-      setWorkouts([...workouts, newWorkout]);
-      setFormData({ name: "", category: "strength", duration: "", difficulty: "beginner" });
+      const createdWorkout = await createWorkout(newWorkout);
+      setSuccess("Workout created successfully!");
+      setError("");
+  
+      // Update the list of workouts
+      setWorkouts([...workouts, createdWorkout]);
+  
+      // Reset form after submission
+      setFormData({ name: "", category: "Strength", duration: "", difficulty: "Beginner" });
     } catch (error) {
+      setError("Error creating workout. Please try again.");
       console.error("Error creating workout:", error);
     }
   };
+  
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded-lg shadow-md">
-      <h2 className="text-lg font-bold mb-2">Add Workout</h2>
-      <input
-        type="text"
-        name="name"
-        placeholder="Workout Name"
-        value={formData.name}
-        onChange={handleChange}
-        className="w-full p-2 mb-2 border rounded"
-        required
-      />
-      <select
-        name="category"
-        value={formData.category}
-        onChange={handleChange}
-        className="w-full p-2 mb-2 border rounded"
-      >
-        <option value="strength">Strength</option>
-        <option value="cardio">Cardio</option>
-        <option value="flexibility">Flexibility</option>
-        <option value="balance">Balance</option>
-      </select>
-      <input
-        type="number"
-        name="duration"
-        placeholder="Duration (min)"
-        value={formData.duration}
-        onChange={handleChange}
-        className="w-full p-2 mb-2 border rounded"
-        required
-      />
-      <select
-        name="difficulty"
-        value={formData.difficulty}
-        onChange={handleChange}
-        className="w-full p-2 mb-2 border rounded"
-      >
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-      </select>
-      <button
-        type="submit"
-        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        Add Workout
-      </button>
-    </form>
+    <div className=" flex items-center justify-center">
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Add Workout</h2>
+
+        <input
+          type="text"
+          name="name"
+          placeholder="Workout Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <select
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="Strength">Strength</option>
+          <option value="Cardio">Cardio</option>
+          <option value="Flexibility">Flexibility</option>
+          <option value="Balance">Balance</option>
+        </select>
+
+        <input
+          type="number"
+          name="duration"
+          placeholder="Duration (min)"
+          value={formData.duration}
+          onChange={handleChange}
+          className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <select
+          name="difficulty"
+          value={formData.difficulty}
+          onChange={handleChange}
+          className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="Beginner">Beginner</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 hover:shadow-lg transition-all"
+        >
+          Add Workout
+        </button>
+      </form>
+    </div>
   );
 };
 
