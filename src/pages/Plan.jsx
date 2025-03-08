@@ -1,67 +1,109 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPlan } from "../services/PlanService";
+import { useWorkout } from "../context/WorkoutContext";
+import { getWorkoutsByUser } from "../services/WorkoutService";
 
-const workoutData = [
-  { day: "Monday", workout: "Chest & Triceps", completed: false },
-  { day: "Tuesday", workout: "Back & Biceps", completed: true },
-  { day: "Wednesday", workout: "Leg Day", completed: false },
-  { day: "Thursday", workout: "Shoulders & Abs", completed: false },
-  { day: "Friday", workout: "Cardio & Core", completed: true },
-];
+const Plan = () => {
+    const { workouts } = useWorkout();
+    const [planTitle, setPlanTitle] = useState("");
+    const [level, setLevel] = useState("beginner");
+    const [duration, setDuration] = useState(1);
+    const [selectedWorkouts, setSelectedWorkouts] = useState([]);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
-const Plan = () =>  {
-  const [workouts, setWorkouts] = useState(workoutData);
+    useEffect(() => {
+        if (workouts.length === 0) {
+            getWorkoutsByUser();
+        }
+    }, []);
 
-  const toggleCompletion = (index) => {
-    const updatedWorkouts = [...workouts];
-    updatedWorkouts[index].completed = !updatedWorkouts[index].completed;
-    setWorkouts(updatedWorkouts);
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!planTitle || selectedWorkouts.length === 0) {
+            setError("Please provide a title and select at least one workout.");
+            return;
+        }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-indigo-600 p-6 flex flex-col items-center">
-      <h1 className="text-4xl font-bold text-white mb-6">🏋️ Your Weekly Plan</h1>
+        const newPlan = {
+            title: planTitle.trim(),
+            level,
+            duration,
+            workouts: selectedWorkouts,
+        };
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
-        {/* Workout Plan List */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">📆 Weekly Plan</h2>
-          <ul className="space-y-3">
-            {workouts.map((item, index) => (
-              <li key={index} className="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
-                <span className="font-medium">{item.day}: {item.workout}</span>
-                <button 
-                  onClick={() => toggleCompletion(index)}
-                  className={`px-4 py-2 text-white rounded-md transition ${
-                    item.completed ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"
-                  }`}
-                >
-                  {item.completed ? "✔ Done" : "Start"}
+        try {
+            await createPlan(newPlan);
+            setSuccess("Plan created successfully!");
+            setError("");
+            setPlanTitle("");
+            setSelectedWorkouts([]);
+        } catch (error) {
+            setError("Error creating plan. Please try again.");
+            console.error("Error:", error);
+        }
+    };
+
+    return (
+        <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Create a Plan</h2>
+
+            {error && <p className="text-red-500">{error}</p>}
+            {success && <p className="text-green-500">{success}</p>}
+
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Plan Title"
+                    value={planTitle}
+                    onChange={(e) => setPlanTitle(e.target.value)}
+                    className="w-full p-2 border rounded mb-3"
+                    required
+                />
+
+                <select value={level} onChange={(e) => setLevel(e.target.value)} className="w-full p-2 border rounded mb-3">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+
+                <input
+                    type="number"
+                    placeholder="Duration (weeks)"
+                    value={duration}
+                    onChange={(e) => setDuration(Number(e.target.value))}
+                    className="w-full p-2 border rounded mb-3"
+                    required
+                />
+
+                <div className="mb-3">
+                    <label className="font-semibold">Select Workouts:</label>
+                    {workouts.length > 0 ? (
+                        workouts.map((workout) => (
+                            <div key={workout._id} className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedWorkouts.includes(workout._id)}
+                                    onChange={() =>
+                                        setSelectedWorkouts((prev) =>
+                                            prev.includes(workout._id) ? prev.filter((id) => id !== workout._id) : [...prev, workout._id]
+                                        )
+                                    }
+                                />
+                                <span className="ml-2">{workout.name}</span>
+                            </div>
+                        ))
+                    ) : (
+                        <p>No workouts available.</p>
+                    )}
+                </div>
+
+                <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded">
+                    Create Plan
                 </button>
-              </li>
-            ))}
-          </ul>
+            </form>
         </div>
-
-        {/* Progress Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800">📊 Progress</h2>
-          <div className="relative w-full bg-gray-300 h-6 rounded-full">
-            <div
-              className="bg-green-500 h-6 rounded-full transition-all"
-              style={{
-                width: `${
-                  (workouts.filter((w) => w.completed).length / workouts.length) * 100
-                }%`,
-              }}
-            ></div>
-          </div>
-          <p className="text-gray-700 mt-2 text-center">
-            {workouts.filter((w) => w.completed).length} / {workouts.length} Workouts Completed
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
 
 export default Plan;

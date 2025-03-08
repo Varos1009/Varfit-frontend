@@ -1,40 +1,41 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getAllWorkouts } from "../services/WorkoutService";
+import { getWorkoutsByUser } from "../services/WorkoutService";
+import { useAuth } from "./AuthContext"; 
 
 const WorkoutContext = createContext();
 
 export const WorkoutProvider = ({ children }) => {
+  const { currentUser } = useAuth(); // Get logged-in user
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
+    if (!currentUser?.uid) {
+      console.error("No user logged in, skipping workout fetch");
+      setLoading(false); // Make sure to stop loading even if there's no user
+      return;
+    }
+  
+    const fetchUserWorkouts = async () => {
       try {
-        const data = await getAllWorkouts();
-        // If the response is an object with a key like 'data', extract the array
-        setWorkouts(data.workouts || data); // Adjust according to your response structure
+        const data = await getWorkoutsByUser(currentUser.uid);
+        setWorkouts(data);
       } catch (error) {
-        console.error("Failed to fetch workouts:", error);
+        console.error("Failed to fetch user workouts:", error);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchWorkouts();
-  }, []);
-
-  const updateWorkouts = async () => {
-    const data = await getAllWorkouts();
-    setWorkouts(data);
-  };
+  
+    fetchUserWorkouts();
+  }, [currentUser]);
+  
 
   return (
-    <WorkoutContext.Provider value={{ workouts, setWorkouts, loading, updateWorkouts }}>
+    <WorkoutContext.Provider value={{ workouts, loading, setWorkouts }}>
       {children}
     </WorkoutContext.Provider>
   );
 };
 
-export const useWorkout = () => {
-  return useContext(WorkoutContext);
-};
+export const useWorkout = () => useContext(WorkoutContext);

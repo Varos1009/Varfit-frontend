@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getWorkoutById, updateWorkout } from "../services/WorkoutService";
+import { getWorkoutsByUser, updateWorkouts } from "../services/WorkoutService";
+import { useAuth } from "../context/AuthContext";
 
 const WorkoutEditForm = () => {
+
+const currentUser = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
 
     const [workout, setWorkout] = useState({
         name: "",
         category: "Strength",
-        duration: 0,
-        difficulty: "beginner",
+        duration: "",
+        difficulty: "Beginner",
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -18,26 +21,47 @@ const WorkoutEditForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
+        console.log("Fetching workout with ID:", id); // Log the ID
+        if (!currentUser?.uid) {
+            setError("User not authenticated.");
+            setLoading(false);
+            return;
+        }
+    
         const fetchWorkout = async () => {
             try {
-                const data = await getWorkoutById(id);
-                if (data) {
-                    setWorkout({
-                        name: data.name || "",
-                        category: data.category || "Strength",
-                        duration: data.duration || 0,
-                        difficulty: data.difficulty || "beginner",
-                    });
+                const data = await getWorkoutsByUser(id, currentUser.uid);
+                console.log("Fetched Workout Data:", data); // Check fetched data
+    
+                if (!data) {
+                    setError("Workout not found.");
+                    return;
                 }
+    
+                if (data.userId !== currentUser.uid) {
+                    setError("Unauthorized access.");
+                    return;
+                }
+    
+                setWorkout({
+                    name: data.name || "",
+                    category: data.category || "Strength",
+                    duration: data.duration || "",
+                    difficulty: data.difficulty || "Beginner",
+                });
             } catch (err) {
                 setError("Failed to fetch workout.");
             } finally {
                 setLoading(false);
             }
         };
-
+    
         fetchWorkout();
-    }, [id]);
+    }, [id, currentUser]);
+    
+    
+    
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -49,25 +73,38 @@ const WorkoutEditForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!workout.name || workout.duration <= 0) {
-            setError("Please provide a valid name and duration.");
-            return;
+      
+        if (!workout || !workout.name || workout.duration <= 0) {
+          setError("Please provide a valid name and duration.");
+          return;
         }
-
+      
+        console.log("Submitting workout:", workout);
+      
         setIsSubmitting(true);
         try {
-            await updateWorkout(id, workout);
-            setSuccess("Workout updated successfully!");
-            setError("");
-
-            setTimeout(() => navigate("/workouts"), 1800);
+          // Add userId from currentUser
+          const updatedWorkout = {
+            ...workout,
+            userId: currentUser.uid, // Add the userId from the logged-in user
+          };
+      
+          // Pass the userId along with the workout ID and updatedWorkout data
+          await updateWorkouts(id, updatedWorkout, currentUser.uid);
+          setSuccess("Workout updated successfully!");
+          setError("");
+      
+          setTimeout(() => navigate("/workouts"), 1800);
         } catch (error) {
-            setError(error.response?.data?.error || "Error updating workout.");
-            setSuccess("");
+          setError(error.response?.data?.error || "Error updating workout.");
+          setSuccess("");
         } finally {
-            setIsSubmitting(false);
+          setIsSubmitting(false);
         }
-    };
+      };
+      
+      
+    
 
     if (loading) return <div className="text-center text-gray-600">Loading...</div>;
 

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { createWorkout } from "../services/WorkoutService";
 import { useWorkout } from "../context/WorkoutContext";
+import { useAuth } from "../context/AuthContext";
 
 const WorkoutForm = () => {
+  const { currentUser } = useAuth();
   const { workouts, setWorkouts } = useWorkout();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -20,41 +22,54 @@ const WorkoutForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Ensure all fields are filled
-    if (!formData.name || !formData.duration) {
-      setError("Please fill out all fields.");
-      return;
+
+    if (!currentUser) {
+        setError("You must be logged in to add a workout.");
+        return;
     }
-  
+
+    if (!formData.name.trim() || !formData.duration) {
+        setError("Please fill out all fields.");
+        return;
+    }
+
     const newWorkout = {
-      name: formData.name.trim(), // Trim spaces
-      category: formData.category || "Strength",
-      duration: Number(formData.duration), // Ensure it's a number
-      difficulty: formData.difficulty || "Beginner",
+        name: formData.name.trim(),
+        category: formData.category,
+        duration: parseInt(formData.duration, 10), // Ensure it's a valid number
+        difficulty: formData.difficulty,
+        userId: currentUser.uid, // Ensure userId is included
     };
-  
+
+    console.log("Submitting workout:", newWorkout); // Debugging
+
     try {
-      const createdWorkout = await createWorkout(newWorkout);
-      setSuccess("Workout created successfully!");
-      setError("");
-  
-      // Update the list of workouts
-      setWorkouts([...workouts, createdWorkout]);
-  
-      // Reset form after submission
-      setFormData({ name: "", category: "Strength", duration: "", difficulty: "Beginner" });
+        const createdWorkout = await createWorkout(newWorkout);
+        setSuccess("Workout created successfully!");
+        setError("");
+
+        setWorkouts([...workouts, createdWorkout]);
+
+        setFormData({ name: "", category: "Strength", duration: "", difficulty: "Beginner" });
+
+        // Hide success message after 2 seconds
+        setTimeout(() => {
+            setSuccess("");
+        }, 2000);
     } catch (error) {
-      setError("Error creating workout. Please try again.");
-      console.error("Error creating workout:", error);
+        console.error("Error creating workout:", error.response?.data || error);
+        setError(error.response?.data?.errors?.[0]?.msg || "Error creating workout.");
     }
-  };
-  
+};
+
 
   return (
-    <div className=" flex items-center justify-center">
+    <div className="flex items-center justify-center">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Add Workout</h2>
+
+        {error && <p className="text-red-500 text-center">{error}</p>}
+        {success && <p className="text-green-500 text-center">{success}</p>}
 
         <input
           type="text"

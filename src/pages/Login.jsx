@@ -4,49 +4,51 @@ import { Login, signInWithGoogle } from "../firebase/auth";
 import { useAuth } from "../context/AuthContext";
 import GoogleIcon from "../assets/Google_Icon.webp";
 
-function LoginPage() {
-  const { userLoggedIn } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const [isSignIn, setIsSignIn] = useState(false);
 
-  useEffect(() => {
-    if (userLoggedIn) {
-      navigate("/");
-    }
-  }, [userLoggedIn, navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!isSignIn) {
-      setIsSignIn(true);
-      setError(null);
-      try {
-        await Login(email, password);
-      } catch (err) {
-        setError("Invalid login or password.");
-      } finally {
-        setIsSignIn(false);
+  function LoginPage() {
+    const { userLoggedIn, currentUser } = useAuth();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(null);
+    const [isSignIn, setIsSignIn] = useState(false);
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      if (userLoggedIn && currentUser?.uid) {
+        navigate(`/dashboard/${currentUser.uid}`);
       }
-    }
-  };
-
-  const handleGoogleSignIn = async (e) => {
-    e.preventDefault();
-    if (!isSignIn) {
-      setIsSignIn(true);
-      setError(null);
-      try {
-        await signInWithGoogle();
-      } catch (err) {
-        setError("Google sign-in failed. Please try again.");
-      } finally {
-        setIsSignIn(false);
+    }, [userLoggedIn, currentUser, navigate]);
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!isSignIn) {
+        setIsSignIn(true);
+        setError(null);
+        try {
+          await Login(email, password);
+        } catch (err) {
+          setError(err.message || "Invalid login or password.");
+        } finally {
+          setIsSignIn(false);
+        }
       }
-    }
-  };
+    };
+  
+    const handleGoogleSignIn = async (e) => {
+      e.preventDefault();
+      if (!isSignIn) {
+        setIsSignIn(true);
+        setError(null);
+        try {
+          await signInWithGoogle();
+        } catch (err) {
+          setError(err.message || "Google sign-in failed. Please try again.");
+        } finally {
+          setIsSignIn(false);
+        }
+      }
+    };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-indigo-600">
