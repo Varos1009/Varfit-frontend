@@ -11,6 +11,7 @@ import WorkoutEditForm from "../components/WorkoutEditForm";
 import Plan from "../pages/Plan";
 import ProgressList from "../components/ProgressList";
 import ProgressForm from "../components/ProgressForm";
+import ExerciseList from "../components/ExerciseList";
 
 const AppRouter = () => {
 
@@ -27,6 +28,7 @@ const AppRouter = () => {
           <Route path="/dashboard/:uid" element={<Dashboard />} />
           <Route path="/workouts" element={<Workout />} />
           <Route path="/workouts/edit/:id" element={<WorkoutEditForm />} />
+          <Route path="/exercises" element={<ExerciseList />} />
           <Route path="/plan" element={<Plan />} />
           <Route path="/progress" element={<ProgressList />} />
           <Route path="/progress/edit/:id" element={<ProgressForm />} />

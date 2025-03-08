@@ -30,6 +30,7 @@ const Navbar = () => {
                     {currentUser ? (
                         <>
                             <NavLink to="/workouts">Workouts</NavLink>
+                            <NavLink to="/exercises">Exercises</NavLink>
                             <NavLink to="/plan">Plan</NavLink>
                             <NavLink to="/progress">Progress</NavLink>
                             <NavLink to="/" isButton onClick={() => Logout(auth)}>Logout</NavLink>
@@ -78,6 +79,9 @@ const Navbar = () => {
                     <>
                         <NavLink to="/workouts" onClick={() => setIsOpen(false)} mobile>
                             Workout
+                        </NavLink>
+                        <NavLink to="/exercises" onClick={() => setIsOpen(false)} mobile>
+                            Exercises
                         </NavLink>
                         <NavLink to="/plan" onClick={() => setIsOpen(false)} mobile>
                             Plan
