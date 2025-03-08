@@ -1,56 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { Link } from "react-router-dom";
 import DeleteWorkoutModal from "./DeleteWorkoutModal";
-import { deleteWorkout, getAllWorkouts } from "../services/WorkoutService";
 
 const WorkoutList = () => {
-  const { workouts, setWorkouts, loading } = useWorkout();
-  const [selectedWorkout, setSelectedWorkout] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { workouts, loading } = useWorkout(); // ✅ Get workouts from context
+  console.log("Workouts in WorkoutList:", workouts); // ✅ Debugging log
+  const [selectedWorkout, setSelectedWorkout] = React.useState(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  const userId = localStorage.getItem("userId");
-
-  useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        const fetchedWorkouts = await getAllWorkouts(userId); // Pass userId
-        setWorkouts(fetchedWorkouts);
-      } catch (error) {
-        console.error("Error fetching workouts:", error);
-      }
-    };
+  if (loading) return <p>Loading...</p>;
+  if (!Array.isArray(workouts)) {
+    console.error("Workouts is not an array:", workouts);
+    return <div>Error: Workouts data is not an array!</div>;
+  }
   
-    if (userId) {
-      fetchWorkouts(); // Fetch workouts only if userId is available
-    }
-  }, [userId]); // Runs when userId changes
-
-  const openDeleteModal = (workout) => {
-    setSelectedWorkout(workout);
-    setIsModalOpen(true);
-  };
-
-  const closeDeleteModal = () => {
-    setIsModalOpen(false);
-    setSelectedWorkout(null);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (selectedWorkout) {
-      try {
-        await deleteWorkout(selectedWorkout._id); // Delete the workout by its ID
-        setWorkouts(workouts.filter((workout) => workout._id !== selectedWorkout._id)); // Remove from state
-        closeDeleteModal(); // Close the modal after deletion
-      } catch (error) {
-        console.error("Failed to delete workout:", error); // Handle error if delete fails
-      }
-    }
-  };
-
-  if (loading) return <p>Loading...</p>; // Show loading if data is being fetched
-  if (!Array.isArray(workouts)) return <div>Error: Workouts data is not an array!</div>;
-  if (workouts.length === 0) return <div>No workouts found.</div>;
+  if (workouts.length === 0) {
+    console.warn("Workouts array is empty!");
+    return <div>No workouts found.</div>;
+  }
+  
 
   return (
     <div className="p-6 min-h-screen">
@@ -64,33 +33,16 @@ const WorkoutList = () => {
               <div className="flex items-center"><span className="mr-2 text-lg">⏳</span>Duration: {workout.duration} min</div>
               <div className="flex items-center"><span className="mr-2 text-lg">🔥</span>Difficulty: {workout.difficulty}</div>
             </div>
-
             <div className="mt-4 flex flex-wrap gap-3 justify-center sm:justify-between items-center">
-              <Link
-                to={`/workouts/edit/${workout._id}`}
-                className="flex items-center gap-2 text-white bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-all w-full sm:w-auto justify-center"
-              >
-                ✏️ Edit
-              </Link>
-
-              <button
-                onClick={() => openDeleteModal(workout)}
-                className="flex items-center gap-2 text-white bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition-all w-full sm:w-auto justify-center"
-              >
-                🗑️ Delete
-              </button>
+              <Link to={`/workouts/edit/${workout._id}`} className="flex items-center gap-2 text-white bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-all w-full sm:w-auto justify-center">✏️ Edit</Link>
+              <button onClick={() => setSelectedWorkout(workout)} className="flex items-center gap-2 text-white bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition-all w-full sm:w-auto justify-center">🗑️ Delete</button>
             </div>
           </div>
         ))}
       </div>
 
       {/* Delete Confirmation Modal */}
-      <DeleteWorkoutModal
-        isOpen={isModalOpen}
-        onClose={closeDeleteModal}
-        onConfirm={handleDeleteConfirm}
-        workoutName={selectedWorkout ? selectedWorkout.name : ""}
-      />
+      {isModalOpen && <DeleteWorkoutModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={() => {/* delete logic */}} workoutName={selectedWorkout?.name} />}
     </div>
   );
 };

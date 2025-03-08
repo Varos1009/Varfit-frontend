@@ -1,41 +1,49 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { getWorkoutsByUser } from "../services/WorkoutService";
-import { useAuth } from "./AuthContext"; 
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { getWorkoutsByUser } from "../services/WorkoutService"; // Import your workout fetching function
+import { useAuth } from "../context/AuthContext"; // Import Auth context to track login state
 
 const WorkoutContext = createContext();
 
+export const useWorkout = () => {
+  return useContext(WorkoutContext);
+};
+
 export const WorkoutProvider = ({ children }) => {
-  const { currentUser } = useAuth(); // Get logged-in user
+  const { userLoggedIn } = useAuth(); // Track if the user is logged in
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!currentUser?.uid) {
-      console.error("No user logged in, skipping workout fetch");
-      setLoading(false); // Make sure to stop loading even if there's no user
-      return;
-    }
-  
-    const fetchUserWorkouts = async () => {
-      try {
-        const data = await getWorkoutsByUser(currentUser.uid);
-        setWorkouts(data);
-      } catch (error) {
-        console.error("Failed to fetch user workouts:", error);
-      } finally {
+    const fetchWorkouts = async () => {
+      if (!userLoggedIn) {
+        console.log("No user logged in, skipping workout fetch");
         setLoading(false);
+        return;
       }
+  
+      try {
+        const userId = localStorage.getItem("userId");
+        if (userId) {
+          console.log("Fetching workouts for user:", userId); // ✅ Debugging log
+          const fetchedWorkouts = await getWorkoutsByUser(userId);
+          console.log("Fetched workouts:", fetchedWorkouts); // ✅ Debugging log
+          setWorkouts(fetchedWorkouts);
+        }
+      } catch (error) {
+        console.error("Error fetching workouts:", error);
+      }
+      setLoading(false);
     };
   
-    fetchUserWorkouts();
-  }, [currentUser]);
-  
+    fetchWorkouts();
+  }, [userLoggedIn]);
+   
 
   return (
-    <WorkoutContext.Provider value={{ workouts, loading, setWorkouts }}>
+    <WorkoutContext.Provider value={{ workouts, setWorkouts, loading }}>
       {children}
     </WorkoutContext.Provider>
   );
 };
 
-export const useWorkout = () => useContext(WorkoutContext);
+export default WorkoutContext;

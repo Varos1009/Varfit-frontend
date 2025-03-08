@@ -1,182 +1,124 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getWorkoutsByUser, updateWorkouts } from "../services/WorkoutService";
-import { useAuth } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useWorkout } from "../context/WorkoutContext";
+import { updateWorkouts } from "../services/WorkoutService"; // make sure this function is available
 
-const WorkoutEditForm = () => {
-
-const currentUser = useAuth();
-    const { id } = useParams();
-    const navigate = useNavigate();
-
+const WorkoutEditForm = (handle) => {
+    const { id } = useParams(); // Get the workout ID from the URL
     const [workout, setWorkout] = useState({
         name: "",
-        category: "Strength",
+        category: "",
         duration: "",
-        difficulty: "Beginner",
+        difficulty: "",
     });
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+    const { workouts } = useWorkout();
+    const userId = localStorage.getItem("userId"); // Assume userId is stored in localStorage
 
     useEffect(() => {
-        console.log("Fetching workout with ID:", id); // Log the ID
-        if (!currentUser?.uid) {
-            setError("User not authenticated.");
-            setLoading(false);
-            return;
-        }
-    
-        const fetchWorkout = async () => {
-            try {
-                const data = await getWorkoutsByUser(id, currentUser.uid);
-                console.log("Fetched Workout Data:", data); // Check fetched data
-    
-                if (!data) {
-                    setError("Workout not found.");
-                    return;
-                }
-    
-                if (data.userId !== currentUser.uid) {
-                    setError("Unauthorized access.");
-                    return;
-                }
-    
-                setWorkout({
-                    name: data.name || "",
-                    category: data.category || "Strength",
-                    duration: data.duration || "",
-                    difficulty: data.difficulty || "Beginner",
-                });
-            } catch (err) {
-                setError("Failed to fetch workout.");
-            } finally {
-                setLoading(false);
-            }
-        };
-    
-        fetchWorkout();
-    }, [id, currentUser]);
-    
-    
-    
-    
+        // Find the workout by its ID
+        const workoutToEdit = workouts.find((w) => w._id === id);
 
-    const handleChange = (e) => {
+        if (workoutToEdit) {
+            setWorkout(workoutToEdit);
+            setLoading(false);
+        } else {
+            // If workout is not found, redirect or show an error message
+            console.error("Workout not found");
+            setLoading(false);
+            setError("Workout not found!");
+        }
+    }, [id, workouts]);
+
+    const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setWorkout((prev) => ({
-            ...prev,
-            [name]: name === "duration" ? Number(value) : value, // Ensure duration is a number
+        setWorkout((prevWorkout) => ({
+            ...prevWorkout,
+            [name]: value,
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
-        if (!workout || !workout.name || workout.duration <= 0) {
-          setError("Please provide a valid name and duration.");
-          return;
-        }
-      
-        console.log("Submitting workout:", workout);
-      
-        setIsSubmitting(true);
-        try {
-          // Add userId from currentUser
-          const updatedWorkout = {
-            ...workout,
-            userId: currentUser.uid, // Add the userId from the logged-in user
-          };
-      
-          // Pass the userId along with the workout ID and updatedWorkout data
-          await updateWorkouts(id, updatedWorkout, currentUser.uid);
-          setSuccess("Workout updated successfully!");
-          setError("");
-      
-          setTimeout(() => navigate("/workouts"), 1800);
-        } catch (error) {
-          setError(error.response?.data?.error || "Error updating workout.");
-          setSuccess("");
-        } finally {
-          setIsSubmitting(false);
-        }
-      };
-      
-      
-    
+        setError(""); // Reset any previous error
 
-    if (loading) return <div className="text-center text-gray-600">Loading...</div>;
+        try {
+            // Call the update function and pass the data
+            await updateWorkouts(id, workout, userId);
+            setSuccess("Workout updated successfully!");
+            setLoading(false);
+            setError("");
+            setTimeout(() => navigate("/workouts"), 2000);
+        } catch (error) {
+            console.error("Failed to update workout:", error);
+            setLoading(false);
+        }
+    };
+
+    if (loading) return <p>Loading...</p>;
 
     return (
-        <div className="flex justify-center items-center my-6">
+        <div className="flex items-center justify-center mt-10">
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Edit Workout</h2>
 
-                {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-                {success && <p className="text-green-500 mb-4 text-center">{success}</p>}
+                {/* Show error message */}
+                {error && <p className="text-red-500 text-center">{error}</p>}
+                
+                {/* Show success message */}
+                {success && <p className="text-green-500 text-center">{success}</p>}
 
-                <div>
-                    <label className="block font-semibold mb-1 px-2">Name</label>
-                    <input
-                        type="text"
-                        name="name"
-                        value={workout.name}
-                        onChange={handleChange}
-                        className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Workout Name"
+                    value={workout.name}
+                    onChange={handleInputChange}
+                    className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
 
-                <div>
-                    <label className="block font-semibold mb-1 px-2">Category</label>
-                    <select
-                        name="category"
-                        value={workout.category}
-                        onChange={handleChange}
-                        className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="Strength">Strength</option>
-                        <option value="Cardio">Cardio</option>
-                        <option value="Flexibility">Flexibility</option>
-                        <option value="Balance">Balance</option>
-                    </select>
-                </div>
+                <select
+                    name="category"
+                    value={workout.category}
+                    onChange={handleInputChange}
+                    className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="Strength">Strength</option>
+                    <option value="Cardio">Cardio</option>
+                    <option value="Flexibility">Flexibility</option>
+                    <option value="Balance">Balance</option>
+                </select>
 
-                <div>
-                    <label className="block font-semibold mb-1 px-2">Duration (in minutes)</label>
-                    <input
-                        type="number"
-                        name="duration"
-                        value={workout.duration}
-                        onChange={handleChange}
-                        className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
+                <input
+                    type="number"
+                    name="duration"
+                    placeholder="Duration (min)"
+                    value={workout.duration}
+                    onChange={handleInputChange}
+                    className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                />
 
-                <div>
-                    <label className="block font-semibold mb-1 px-2">Difficulty</label>
-                    <select
-                        name="difficulty"
-                        value={workout.difficulty}
-                        onChange={handleChange}
-                        className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                    </select>
-                </div>
+                <select
+                    name="difficulty"
+                    value={workout.difficulty}
+                    onChange={handleInputChange}
+                    className="w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                </select>
 
                 <button
                     type="submit"
-                    className={`w-full py-3 mt-4 text-white font-semibold rounded-lg transition-all ${
-                        isSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 hover:shadow-lg"
-                    }`}
-                    disabled={isSubmitting}
+                    className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 hover:shadow-lg transition-all"
                 >
-                    {isSubmitting ? "Updating..." : "Update Workout"}
+                    Save Changes
                 </button>
             </form>
         </div>
