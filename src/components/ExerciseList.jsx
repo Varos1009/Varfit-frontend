@@ -1,42 +1,26 @@
 import { useEffect, useState } from "react";
+import fetchExercises from "../services/ExerciseApi";
 
 const ExerciseList = () => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
-  const limit = 10;  // Number of exercises per page
-  
+  const limit = 10; // Number of exercises per page
 
   useEffect(() => {
-    const fetchExercises = async () => {
-      try {
-        const response = await fetch(
-          `https://exercisedb.p.rapidapi.com/exercises?offset=${page * limit}&limit=${limit}`,
-          {
-            method: "GET",
-            headers: {
-              "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
-              "X-RapidAPI-Host": "exercisedb.p.rapidapi.com"
-            }
-          }
-        );
+    const loadExercises = async () => {
+      setLoading(true);
+      setError(null);
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch exercises");
-        }
-
-        const data = await response.json();
-        setExercises(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      const data = await fetchExercises(limit, page * limit);
+      if (data.length === 0) setError("No exercises found.");
+      setExercises(data);
+      setLoading(false);
     };
 
-    fetchExercises();
-  }, [page]);  // Fetch data when page changes
+    loadExercises();
+  }, [page]); // Fetch data when page changes
 
   if (loading) return <p>Loading exercises...</p>;
   if (error) return <p>Error: {error}</p>;
