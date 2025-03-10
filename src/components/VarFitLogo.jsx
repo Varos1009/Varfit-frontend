@@ -17,7 +17,26 @@ const VarFitLogo = () => {
           strokeWidth="6"
           strokeLinecap="round"
           strokeLinejoin="round"
-        />
+        >
+          {/* Heartbeat animation (scaling) */}
+          <animateTransform
+            attributeType="XML"
+            attributeName="transform"
+            type="scale"
+            values="1;1.2;1"
+            dur="1.6s"
+            repeatCount="indefinite"
+            transform-origin="50% 50%" 
+          />
+          
+          {/* Color change animation */}
+          <animate
+            attributeName="stroke"
+            values="red;#9f1e38;red"
+            dur="1.6s"
+            repeatCount="indefinite"
+          />
+        </polyline>
       </svg>
 
       {/* Brand Name */}

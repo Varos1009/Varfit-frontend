@@ -20,7 +20,7 @@ const Navbar = () => {
                 <Link
                     to="/"
                     onClick={handleLogoClick}
-                    className="flex items-center z-30"
+                    className="flex items-center  z-30"
                 >
                     <VarFitLogo />
                 </Link>
@@ -71,10 +71,11 @@ const Navbar = () => {
 
             {/* Mobile Menu Dropdown */}
             <div
-                className={`md:hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-                    } overflow-hidden bg-white shadow-md absolute top-16 left-0 w-full p-4 space-y-4 z-20`}  // Set z-index to 20 for dropdown
-                aria-hidden={!isOpen}
+                className={`md:hidden transition-all duration-300 ease-in-out ${isOpen ? "max-h-screen opacity-100" : "max-h-0 opacity-0"
+                    } overflow-hidden bg-white shadow-md absolute top-16 left-0 w-full p-4 space-y-4 z-20`}
+                inert={!isOpen} // Correct way to set inert as a boolean
             >
+
                 {currentUser ? (
                     <>
                         <NavLink to="/workouts" onClick={() => setIsOpen(false)} mobile>
