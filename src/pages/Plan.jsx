@@ -81,19 +81,9 @@ const MyPlans = () => {
           </div>
         ))
       ) : (
-        <p className="text-lg text-gray-600 text-center">You have no workout plans yet.</p>
+        <p className="text-lg text-black-900 font-semibold text-center">You have no workout plans yet.</p>
       )}
 
-      {/* Create New Plan Button - Also at the Bottom */}
-      <div className="text-center mt-8">
-        <Link
-          to="/createplan"
-          className="inline-block px-8 py-3 bg-green-600 text-white rounded-lg 
-          hover:bg-green-700 font-semibold transition duration-200 transform hover:scale-105"
-        >
-          ➕ Create New Plan
-        </Link>
-      </div>
     </div>
   );
 
