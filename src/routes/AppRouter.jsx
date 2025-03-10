@@ -31,7 +31,7 @@ const AppRouter = () => {
           <Route path="/exercises" element={<ExerciseList />} />
           <Route path="/plan" element={<Plan />} />
           <Route path="/createplan" element={<CreatePlan />} />
-          <Route path="/plan/:id" component={ViewEditPlan} />
+          <Route path="/plan/:id" element={<ViewEditPlan />} />
           <Route path="/progress" element={<ProgressList />} />
           <Route path="/progress/edit/:id" element={<ProgressForm />} />
         </Route>

@@ -13,29 +13,29 @@ export const PlanProvider = ({ children }) => {
   const [error, setError] = useState(null); // Error state
 
 
-/// ✅ Fetch all plans for a specific user
-const getPlan = async (userId) => {
-  if (!userId) {
-    console.error("❌ Missing userId in getPlan");
-    setError("User ID is missing.");
-    return;
-  }
-  setLoading(true);
-  try {
-    const response = await fetchPlan(userId); // API call
-
-    console.log("✅ Fetched user plans:", response);
-    
-    // 🔥 Ensure it's stored as an array
-    setPlans(Array.isArray(response) ? response : [response]);
-
-  } catch (err) {
-    setError("Error fetching the plan.");
-    console.error("❌ Error fetching the plan:", err);
-  } finally {
-    setLoading(false);
-  }
-};
+  const getPlan = async (id) => {  // ✅ Only pass planId
+    if (!id) {
+      console.error("❌ Missing planId in getPlan");
+      setError("Plan ID is missing.");
+      return;
+    }
+  
+    setLoading(true);
+    try {
+      const response = await fetchPlan(id); // ✅ Fetch using planId
+  
+      console.log("✅ Fetched plan:", response);
+      
+      setPlans(response);
+  
+    } catch (err) {
+      setError("Error fetching the plan.");
+      console.error("❌ Error fetching the plan:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
 
 // ✅ Fetch all plans in the database

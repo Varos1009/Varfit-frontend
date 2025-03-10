@@ -15,13 +15,11 @@ export const getAllPlans = async (userId) => {
 };
 
 // ✅ Fetch the current user's plans
-export const fetchPlan = async (userId) => {
-  if (!userId) throw new Error("❌ User ID is required");
-
+export const fetchPlan = async (planId) => {
   try {
-    const response = await axios.get(`${API_URL}/user/${userId}`); // ✅ Correct API call
+    const response = await axios.get(`${API_URL}/user/${planId}`); // ✅ Fetch using planId
     console.log("✅ API response:", response.data);
-    return Array.isArray(response.data) ? response.data : [response.data]; // Ensure it's an array
+    return response.data; // ✅ No need to wrap in an array
   } catch (error) {
     console.error("❌ Error fetching plan:", error.response?.data || error.message);
     throw new Error(error.response?.data?.message || "Error fetching plan.");
