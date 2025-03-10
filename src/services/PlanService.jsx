@@ -1,41 +1,67 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api";
+const API_URL = "http://localhost:5000/api/plans";
 
-// Create a new plan
-export const createPlan = async (plan) => {
-    try {
-      console.log("Sending Plan Data:", plan); 
-      const response = await axios.post(`${API_URL}/plans`, plan);
-      return response.data;
-    } catch (error) {
-      if (error.response) {
-        console.error("Server Response Data:", error.response.data);
-      }
-      console.error("Error creating plan:", error);
-      throw new Error("Error creating plan");
-    }
-  };
-  
-
-// Get all plans
-export const getPlans = async () => {
+// ✅ Fetch all plans
+export const getAllPlans = async (userId) => {
+  if (!userId) throw new Error("User ID is required");
   try {
-    const response = await axios.get(`${API_URL}/plans`);
+    const response = await axios.get(`${API_URL}/${userId}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching plans:", error);
-    throw new Error("Error fetching plans");
+    console.error("Error fetching plans:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Error fetching plans.");
   }
 };
 
-// Delete a plan
-export const deletePlan = async (id) => {
+// ✅ Fetch the current user's plans
+export const fetchPlan = async (userId) => {
+  if (!userId) throw new Error("❌ User ID is required");
+
   try {
-    const response = await axios.delete(`${API_URL}/plans/${id}`);
+    const response = await axios.get(`${API_URL}/user/${userId}`); // ✅ Correct API call
+    console.log("✅ API response:", response.data);
+    return Array.isArray(response.data) ? response.data : [response.data]; // Ensure it's an array
+  } catch (error) {
+    console.error("❌ Error fetching plan:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Error fetching plan.");
+  }
+};
+
+
+// ✅ Create a new plan
+export const createPlan = async (newPlan) => {
+  try {
+    const response = await axios.post(API_URL, newPlan);
     return response.data;
   } catch (error) {
-    console.error("Error deleting plan:", error);
-    throw new Error("Error deleting plan");
+    console.error("Error creating plan:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Error creating plan.");
+  }
+};
+
+// ✅ Update an existing plan
+export const updatePlan = async (updatedPlan) => {
+  if (!updatedPlan?._id) throw new Error("Plan ID is required for updating");
+
+  try {
+    const response = await axios.put(`${API_URL}/${updatedPlan._id}`, updatedPlan);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating plan:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Error updating plan.");
+  }
+};
+
+// ✅ Delete a plan by ID
+export const deletePlan = async (planId) => {
+  if (!planId) throw new Error("Plan ID is required for deletion");
+
+  try {
+    const response = await axios.delete(`${API_URL}/${planId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting plan:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Error deleting plan.");
   }
 };

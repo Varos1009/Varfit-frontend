@@ -29,7 +29,6 @@ const WorkoutList = () => {
           <div key={workout._id} className="bg-white p-6 rounded-lg shadow-xl hover:shadow-2xl transition-all">
             <h3 className="text-xl font-bold text-center text-blue-800">{workout.name}</h3>
             <div className="mt-2 space-y-2">
-              <div className="flex items-center"><span className="mr-2 text-lg">🏋️</span>Category: {workout.category}</div>
               <div className="flex items-center"><span className="mr-2 text-lg">⏳</span>Duration: {workout.duration} min</div>
               <div className="flex items-center"><span className="mr-2 text-lg">🔥</span>Difficulty: {workout.difficulty}</div>
             </div>

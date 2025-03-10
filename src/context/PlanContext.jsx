@@ -1,28 +1,108 @@
-import React, { createContext, useState, useContext } from "react";
-import { getPlans } from "../services/PlanService";
+import React, { createContext, useContext, useState } from 'react';
+import { getAllPlans, fetchPlan, createPlan, updatePlan, deletePlan } from '../services/PlanService';
 
 const PlanContext = createContext();
 
-export const PlanProvider = ({ children }) => {
-  const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const usePlan = () => {
+  return useContext(PlanContext);
+};
 
-  const fetchPlans = async () => {
+export const PlanProvider = ({ children }) => {
+  const [plans, setPlans] = useState([]); // Use an array for multiple plans
+  const [loading, setLoading] = useState(false); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+
+/// ✅ Fetch all plans for a specific user
+const getPlan = async (userId) => {
+  if (!userId) {
+    console.error("❌ Missing userId in getPlan");
+    setError("User ID is missing.");
+    return;
+  }
+  setLoading(true);
+  try {
+    const response = await fetchPlan(userId); // API call
+
+    console.log("✅ Fetched user plans:", response);
+    
+    // 🔥 Ensure it's stored as an array
+    setPlans(Array.isArray(response) ? response : [response]);
+
+  } catch (err) {
+    setError("Error fetching the plan.");
+    console.error("❌ Error fetching the plan:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+// ✅ Fetch all plans in the database
+const getAllPlan = async (userId) => {
+  if (!userId) {
+    console.error("❌ Missing userId in getAllPlan");
+    setError("User ID is missing.");
+    return;
+  }
+  setLoading(true);
+  try {
+    const response = await getAllPlans(userId); // 🔥 Calling the correct function
+    console.log("✅ Fetched all plans:", response);
+    setPlans(response);
+  } catch (err) {
+    setError("Error fetching all plans.");
+    console.error("❌ Error fetching all plans:", err);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+  // Create a new plan
+  const addPlan = async (newPlan) => {
+    setLoading(true);
     try {
-      const data = await getPlans();
-      setPlans(data);
-    } catch (error) {
-      console.error("Error fetching plans:", error);
+      const response = await createPlan(newPlan);
+      setPlans((prevPlans) => [...prevPlans, response]); // Add new plan to the state
+    } catch (err) {
+      setError("Error creating the plan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update an existing plan
+  const modifyPlan = async (updatedPlan) => {
+    setLoading(true);
+    try {
+      const response = await updatePlan(updatedPlan);
+      setPlans((prevPlans) =>
+        prevPlans.map((plan) => (plan._id === updatedPlan._id ? response : plan))
+      ); // Update the plan in the state
+    } catch (err) {
+      setError("Error updating the plan.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Delete a plan
+  const removePlan = async (planId) => {
+    setLoading(true);
+    try {
+      await deletePlan(planId);
+      setPlans((prevPlans) => prevPlans.filter((plan) => plan._id !== planId)); // Remove the plan from state
+    } catch (err) {
+      setError("Error deleting the plan.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <PlanContext.Provider value={{ plans, setPlans, fetchPlans, loading }}>
+    <PlanContext.Provider value={{ plans, loading, error, getPlan, getAllPlan, addPlan, modifyPlan, removePlan }}>
       {children}
     </PlanContext.Provider>
   );
 };
-
-export const usePlan = () => useContext(PlanContext);

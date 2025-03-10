@@ -11,7 +11,6 @@ const WorkoutForm = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    category: "Strength",
     duration: "",
     difficulty: "Beginner",
   });
@@ -35,7 +34,6 @@ const WorkoutForm = () => {
 
     const newWorkout = {
         name: formData.name.trim(),
-        category: formData.category,
         duration: parseInt(formData.duration, 10), // Ensure it's a valid number
         difficulty: formData.difficulty,
         userId: currentUser.uid, // Ensure userId is included
@@ -50,7 +48,7 @@ const WorkoutForm = () => {
 
         setWorkouts([...workouts, createdWorkout]);
 
-        setFormData({ name: "", category: "Strength", duration: "", difficulty: "Beginner" });
+        setFormData({ name: "", duration: "", difficulty: "Beginner" });
 
         // Hide success message after 2 seconds
         setTimeout(() => {
@@ -81,18 +79,7 @@ const WorkoutForm = () => {
           required
         />
 
-        <select
-          name="category"
-          value={formData.category}
-          onChange={handleChange}
-          className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="Strength">Strength</option>
-          <option value="Cardio">Cardio</option>
-          <option value="Flexibility">Flexibility</option>
-          <option value="Balance">Balance</option>
-        </select>
-
+        
         <input
           type="number"
           name="duration"

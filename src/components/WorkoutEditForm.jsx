@@ -7,7 +7,6 @@ const WorkoutEditForm = (handle) => {
     const { id } = useParams(); // Get the workout ID from the URL
     const [workout, setWorkout] = useState({
         name: "",
-        category: "",
         duration: "",
         difficulty: "",
     });
@@ -80,18 +79,6 @@ const WorkoutEditForm = (handle) => {
                     className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     required
                 />
-
-                <select
-                    name="category"
-                    value={workout.category}
-                    onChange={handleInputChange}
-                    className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                    <option value="Strength">Strength</option>
-                    <option value="Cardio">Cardio</option>
-                    <option value="Flexibility">Flexibility</option>
-                    <option value="Balance">Balance</option>
-                </select>
 
                 <input
                     type="number"
