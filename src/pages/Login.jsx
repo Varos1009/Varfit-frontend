@@ -16,7 +16,7 @@ import GoogleIcon from "../assets/Google_Icon.webp";
   
     useEffect(() => {
       if (userLoggedIn && currentUser?.uid) {
-        navigate(`/dashboard/${currentUser.uid}`);
+        navigate("/dashboard");
       }
     }, [userLoggedIn, currentUser, navigate]);
   
