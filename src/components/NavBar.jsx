@@ -32,7 +32,7 @@ const Navbar = () => {
                             <NavLink to="/workouts">Workouts</NavLink>
                             <NavLink to="/exercises">Exercises</NavLink>
                             <NavLink to="/plan">Plan</NavLink>
-                            <NavLink to="/progress">Progress</NavLink>
+                            <NavLink to="/dashboard">Dashboard</NavLink>
                             <NavLink to="/" isButton onClick={() => Logout(auth)}>Logout</NavLink>
                         </>) :
                         (<NavLink to="/login" isButton>
@@ -87,8 +87,8 @@ const Navbar = () => {
                         <NavLink to="/plan" onClick={() => setIsOpen(false)} mobile>
                             Plan
                         </NavLink>
-                        <NavLink to="/progress" onClick={() => setIsOpen(false)} mobile>
-                            Progress
+                        <NavLink to="/dashboard" onClick={() => setIsOpen(false)} mobile>
+                            Dashboard
                         </NavLink>
                         <NavLink to="/" isButton onClick={() => Logout(auth)} mobile>Logout</NavLink>
                     </>) :
