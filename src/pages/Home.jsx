@@ -2,7 +2,7 @@ import React from 'react';
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen mt-21 bg-gray-50 flex flex-col">
       {/* Hero Section */}
       <section className="bg-blue-800 text-white py-24 flex flex-col items-center">
         <h1 className="text-4xl font-semibold mb-4">Welcome to FitTrack</h1>

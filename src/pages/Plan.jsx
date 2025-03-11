@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { usePlan } from "../context/PlanContext";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
@@ -6,27 +6,28 @@ import { Link } from "react-router-dom";
 const MyPlans = () => {
   const { getAllPlan, plans, loading, error, removePlan } = usePlan();
   const { currentUser } = useAuth();
+  const [deleteConfirm, setDeleteConfirm] = useState(null); // Track which plan is being deleted
 
   useEffect(() => {
-    console.log("🔍 Checking currentUser:", currentUser);
     if (currentUser?.uid) {
-      console.log("✅ Fetching plans for user:", currentUser.uid);
       getAllPlan(currentUser.uid);
     }
   }, [currentUser]);
 
-  useEffect(() => {
-    console.log("📌 Plans in MyPlans.jsx:", plans);
-  }, [plans]);
+  const handleDeleteClick = (planId) => {
+    setDeleteConfirm(planId); // Show delete confirmation for this plan
+  };
 
-  const handleDelete = async (planId) => {
-    const confirmed = window.confirm("Are you sure you want to delete this plan?");
-    if (confirmed) {
-      try {
-        await removePlan(planId);
-      } catch (err) {
-        console.error("Failed to delete plan", err);
-      }
+  const handleCancelDelete = () => {
+    setDeleteConfirm(null); // Hide delete confirmation
+  };
+
+  const handleConfirmDelete = async (planId) => {
+    try {
+      await removePlan(planId);
+      setDeleteConfirm(null); // Hide confirmation after deleting
+    } catch (err) {
+      console.error("Failed to delete plan", err);
     }
   };
 
@@ -34,9 +35,9 @@ const MyPlans = () => {
   if (error) return <div className="text-center text-xl font-semibold text-red-500">{error}</div>;
 
   return (
-    <div className="max-w-5xl mx-auto p-8 bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-600 rounded-xl shadow-lg">
+    <div className="max-w-5xl mx-auto mt-21 p-8 bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-600 rounded-xl shadow-lg">
 
-      {/* Create New Plan Button - Now at the Top */}
+      {/* Create New Plan Button */}
       <div className="text-center mb-6">
         <Link
           to="/createplan"
@@ -57,13 +58,33 @@ const MyPlans = () => {
           >
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-2xl font-semibold text-blue-800 hover:text-blue-600 transition duration-200">{plan.title}</h3>
-              <button
-                onClick={() => handleDelete(plan._id)}
-                className="text-red-500 hover:text-red-700 font-semibold text-lg transition duration-300"
-              >
-                🗑️ Delete
-              </button>
+
+              {/* Delete Button or Confirmation */}
+              {deleteConfirm === plan._id ? (
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleConfirmDelete(plan._id)}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 transition duration-200"
+                  >
+                    ✅ Confirm
+                  </button>
+                  <button
+                    onClick={handleCancelDelete}
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg shadow-md hover:bg-gray-400 transition duration-200"
+                  >
+                    ❌ Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleDeleteClick(plan._id)}
+                  className="text-red-500 hover:text-red-700 font-semibold text-lg transition duration-300"
+                >
+                  🗑️ Delete
+                </button>
+              )}
             </div>
+
             <p className="text-sm text-center lg:text-left text-gray-600 mb-2">
               Created on: {new Date(plan.createdAt).toLocaleDateString()}
             </p>
@@ -83,10 +104,8 @@ const MyPlans = () => {
       ) : (
         <p className="text-lg text-black-900 font-semibold text-center">You have no workout plans yet.</p>
       )}
-
     </div>
   );
-
 };
 
 export default MyPlans;

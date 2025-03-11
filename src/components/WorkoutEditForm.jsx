@@ -14,7 +14,7 @@ const WorkoutEditForm = (handle) => {
     const [success, setSuccess] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
-    const { workouts } = useWorkout();
+    const { workouts, refreshWorkouts } = useWorkout();
     const userId = localStorage.getItem("userId"); // Assume userId is stored in localStorage
 
     useEffect(() => {
@@ -50,7 +50,8 @@ const WorkoutEditForm = (handle) => {
             setSuccess("Workout updated successfully!");
             setLoading(false);
             setError("");
-            setTimeout(() => navigate("/workouts"), 2000);
+            refreshWorkouts();
+            setTimeout(() => navigate("/workouts"), 1500);
         } catch (error) {
             console.error("Failed to update workout:", error);
             setLoading(false);
@@ -60,7 +61,7 @@ const WorkoutEditForm = (handle) => {
     if (loading) return <p>Loading...</p>;
 
     return (
-        <div className="flex items-center justify-center mt-10">
+        <div className="flex items-center justify-center mt-22">
             <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Edit Workout</h2>
 

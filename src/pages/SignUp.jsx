@@ -51,12 +51,13 @@ function SignUp() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-400 via-blue-500 to-indigo-600">
+    <div className="flex items-center justify-center min-h-screen mt-10 bg-gradient-to-r from-green-400 via-blue-500 to-indigo-600">
 
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full">
-        <h2 className="text-3xl font-bold text-center text-blue-900 mb-6">Create an Account</h2>
+        <h2 className="text-3xl font-bold text-center text-blue-900 mb-0 mt-2 md:mb-3">Create an Account</h2>
 
-        {emailError && <div className="bg-red-500 text-white text-sm p-3 rounded mb-4 text-center">{emailError}</div>}
+        {emailError &&  <div className="bg-red-500 text-white text-sm p-3 rounded mb-4 text-center">{emailError}</div>}
+        {passwordError && <div className="bg-red-500 text-white text-sm p-3 rounded mb-4 text-center">{passwordError}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>

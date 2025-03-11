@@ -53,9 +53,6 @@ export const updateWorkouts = async (id, updatedWorkout, userId) => {
   }
 };
 
-
-
-
 // Delete a workout
 export const deleteWorkout = async (id) => {
   try {

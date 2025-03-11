@@ -2,9 +2,10 @@ import React from "react";
 import { useWorkout } from "../context/WorkoutContext";
 import { Link } from "react-router-dom";
 import DeleteWorkoutModal from "./DeleteWorkoutModal";
+import { deleteWorkout } from "../services/WorkoutService";
 
 const WorkoutList = () => {
-  const { workouts, loading } = useWorkout(); // ✅ Get workouts from context
+  const { workouts, loading, refreshWorkouts } = useWorkout(); // ✅ Get deleteWorkout function from context
   console.log("Workouts in WorkoutList:", workouts); // ✅ Debugging log
   const [selectedWorkout, setSelectedWorkout] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -14,12 +15,24 @@ const WorkoutList = () => {
     console.error("Workouts is not an array:", workouts);
     return <div>Error: Workouts data is not an array!</div>;
   }
-  
+
   if (workouts.length === 0) {
     console.warn("Workouts array is empty!");
     return <div>No workouts found.</div>;
   }
-  
+
+  // Handle delete confirmation
+  const handleDeleteConfirm = async () => {
+    if (!selectedWorkout) return;
+    try {
+      await deleteWorkout(selectedWorkout._id); // Call delete function from context
+      setIsModalOpen(false);
+      setSelectedWorkout(null);
+      refreshWorkouts();
+    } catch (error) {
+      console.error("Error deleting workout:", error);
+    }
+  };
 
   return (
     <div className="p-6 min-h-screen">
@@ -34,14 +47,29 @@ const WorkoutList = () => {
             </div>
             <div className="mt-4 flex flex-wrap gap-3 justify-center sm:justify-between items-center">
               <Link to={`/workouts/edit/${workout._id}`} className="flex items-center gap-2 text-white bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 transition-all w-full sm:w-auto justify-center">✏️ Edit</Link>
-              <button onClick={() => setSelectedWorkout(workout)} className="flex items-center gap-2 text-white bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition-all w-full sm:w-auto justify-center">🗑️ Delete</button>
+              <button
+                onClick={() => {
+                  setSelectedWorkout(workout);
+                  setIsModalOpen(true);
+                }}
+                className="flex items-center gap-2 text-white bg-red-500 px-4 py-2 rounded-lg hover:bg-red-600 transition-all w-full sm:w-auto justify-center"
+              >
+                🗑️ Delete
+              </button>
             </div>
           </div>
         ))}
       </div>
 
       {/* Delete Confirmation Modal */}
-      {isModalOpen && <DeleteWorkoutModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={() => {/* delete logic */}} workoutName={selectedWorkout?.name} />}
+      {isModalOpen && (
+        <DeleteWorkoutModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={handleDeleteConfirm}
+          workoutName={selectedWorkout?.name}
+        />
+      )}
     </div>
   );
 };

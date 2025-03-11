@@ -53,7 +53,7 @@ const WorkoutForm = () => {
         // Hide success message after 2 seconds
         setTimeout(() => {
             setSuccess("");
-        }, 2000);
+        }, 1500);
     } catch (error) {
         console.error("Error creating workout:", error.response?.data || error);
         setError(error.response?.data?.errors?.[0]?.msg || "Error creating workout.");

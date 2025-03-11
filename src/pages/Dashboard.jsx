@@ -101,7 +101,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto mt-8 bg-white shadow-lg rounded-lg flex flex-col items-center">
+    <div className="p-6 max-w-4xl mx-auto mt-21 bg-white shadow-lg rounded-lg flex flex-col items-center">
       <h1 className="text-3xl font-bold text-blue-800 mb-6">Dashboard</h1>
 
       {/* Alert Message */}
