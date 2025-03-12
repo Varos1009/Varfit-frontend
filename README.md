@@ -43,15 +43,15 @@ npm install
 You need to configure the app with your Firebase and external API keys.
 
 Create a .env file in the root directory of the project and add the following variables:
-- VITE_FIREBASE_API_KEY: <your Firebase API key>
-- VITE_FIREBASE_AUTH_DOMAIN: <your Firebase auth domain>
-- VITE_FIREBASE_PROJECT_ID: <your Firebase project ID>
-- VITE_FIREBASE_STORAGE_BUCKET: <your Firebase storage bucket>
-- VITE_FIREBASE_MESSAGING_SENDER_ID: <your Firebase messaging sender ID>
-- VITE_FIREBASE_APP_ID: <your Firebase app ID>
-- VITE_FIREBASE_MEASUREMENT_ID: <your Firebase measurement ID>
+- VITE_FIREBASE_API_KEY=your Firebase API key
+- VITE_FIREBASE_AUTH_DOMAIN=your Firebase auth domain
+- VITE_FIREBASE_PROJECT_ID=your Firebase project ID
+- VITE_FIREBASE_STORAGE_BUCKET=your Firebase storage bucket
+- VITE_FIREBASE_MESSAGING_SENDER_ID=your Firebase messaging sender ID
+- VITE_FIREBASE_APP_ID=your Firebase app ID
+- VITE_FIREBASE_MEASUREMENT_ID=your Firebase measurement ID
 
-- VITE_RAPID_API_KEY: <your external API key>
+- VITE_RAPID_API_KEY=your external API key
 
 5. Start the development server
 ```
