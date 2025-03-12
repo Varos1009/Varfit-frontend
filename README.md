@@ -65,6 +65,14 @@ npm run dev
 ```
 Open http://localhost:5173 in your browser to view the app.
 
+## Testing
+
+This project uses **Jest** and **React Testing Library** for unit testing. Run tests with:  
+```
+npm test
+```
+Make sure dependencies are installed with **npm install**. For API mocks, update **src/setupTests.js**.
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
