@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/progress";
+const API_URL = "https://varfit-backend.onrender.com/api/progress";
 
 export const getProgressByUserId = async (userId) => {
   try {
