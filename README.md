@@ -2,6 +2,12 @@
 
 This repository contains the frontend application for Varfit, a fitness platform that helps users track their workouts, progress, and weight. The app uses Firebase Authentication for user login and registration, and connects to an external API to fetch and store data.
 
+## Live Demo
+
+You can check out the live demo of the app here: 
+- **Live Demo**: [https://varfit-frontend.vercel.app/](https://varfit-frontend.vercel.app/)
+
+
 ## Features
 
 - Firebase Authentication
