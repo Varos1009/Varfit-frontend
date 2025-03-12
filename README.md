@@ -29,7 +29,7 @@ This repository contains the frontend application for Varfit, a fitness platform
 
 1. Clone the repository
 ```
-git clone https://github.com/Varos1009/Varfit.git
+git clone https://github.com/Varos1009/Varfit-frontend.git
 ```
 2. Navigate into the project directory
 ```
