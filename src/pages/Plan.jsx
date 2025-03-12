@@ -35,7 +35,7 @@ const MyPlans = () => {
   if (error) return <div className="text-center text-xl font-semibold text-red-500">{error}</div>;
 
   return (
-    <div className="max-w-5xl mx-auto mt-21 p-8 bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-600 rounded-xl shadow-lg">
+    <div className="max-w-5xl mx-auto mt-25 p-8 bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-600 rounded-xl shadow-lg">
 
       {/* Create New Plan Button */}
       <div className="text-center mb-6">

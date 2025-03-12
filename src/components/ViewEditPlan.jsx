@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { usePlan } from "../context/PlanContext";
 import { useWorkout } from "../context/WorkoutContext";
 
@@ -67,14 +67,8 @@ const ViewEditPlan = () => {
             <div className="bg-white p-6 rounded-lg shadow-xl space-y-8">
                 {/* Title */}
                 <div>
-                    <h3 className="text-2xl text-center  font-bold text-blue-800">Title</h3>
-                    <p className="text-lg text-center text-red-600 mt-2">{plans.title}</p>
-                </div>
-
-                {/* Week */}
-                <div>
-                    <h3 className="text-2xl text-center font-bold text-blue-800">Created</h3>
-                    <p className="text-lg text-center text-red-600 rounded-lg py-2 px-4 mt-2 ">
+                    <h2 className="text-4xl text-center  font-bold text-red-800">{plans.title}</h2>
+                    <p className="text-lg text-center text-red-800 rounded-lg py-2 px-4 mt-2 ">
                         {formatDate(plans.week)}
                     </p>
                 </div>

@@ -4,7 +4,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen mt-21 bg-gray-50 flex flex-col">
       {/* Hero Section */}
-      <section className="bg-blue-800 text-white py-24 flex flex-col items-center">
+      <section className="bg-blue-800 text-white py-16 flex flex-col items-center">
         <h1 className="text-4xl font-semibold mb-4">Welcome to FitTrack</h1>
         <p className="text-lg mb-8 text-center max-w-2xl">
           Start your fitness transformation today. Keep track of your workouts and progress all in one place!
@@ -12,7 +12,7 @@ const HomePage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-6 bg-gray-100">
+      <section className="py-8 px-6 bg-gray-100">
         <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
           <div className="bg-white p-8 rounded-lg shadow-lg text-center">
             <h3 className="text-2xl font-semibold text-green-800 mb-4">Log Your Workouts</h3>

@@ -42,21 +42,26 @@ export const PlanProvider = ({ children }) => {
 const getAllPlan = async (userId) => {
   if (!userId) {
     console.error("❌ Missing userId in getAllPlan");
-    setError("User ID is missing.");
-    return;
+    setError?.("User ID is missing.");
+    return null; // Return null to avoid undefined errors
   }
-  setLoading(true);
+
+  setLoading?.(true);
   try {
-    const response = await getAllPlans(userId); // 🔥 Calling the correct function
+    const response = await getAllPlans(userId); // 🔥 Ensure this function is correctly defined
     console.log("✅ Fetched all plans:", response);
-    setPlans(response);
+
+    setPlans?.(response); // Update context state if applicable
+    return response; // Return the data so it can be used immediately
   } catch (err) {
-    setError("Error fetching all plans.");
+    setError?.("Error fetching all plans.");
     console.error("❌ Error fetching all plans:", err);
+    return null;
   } finally {
-    setLoading(false);
+    setLoading?.(false);
   }
 };
+
 
 
   // Create a new plan

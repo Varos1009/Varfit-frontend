@@ -24,7 +24,6 @@ export const WorkoutProvider = ({ children }) => {
       if (userId) {
         console.log("Fetching workouts for user:", userId);
         const fetchedWorkouts = await getWorkoutsByUser(userId);
-        console.log("Fetched workouts:", fetchedWorkouts);
         setWorkouts(fetchedWorkouts);
       }
     } catch (error) {
