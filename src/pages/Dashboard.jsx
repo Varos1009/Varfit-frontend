@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getProgressByUserId} from "../services/ProgressService";
 import { getWeightByUserId, addWeightEntry } from "../services/WeightService";
 import { useWorkout } from "../context/WorkoutContext";
 import { usePlan } from "../context/PlanContext";

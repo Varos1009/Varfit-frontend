@@ -42,7 +42,7 @@ function SignUp() {
       await Register(email, password);
       await signInWithEmailAndPassword(auth, email, password);
 
-      navigate("/workouts");
+      navigate("/");
     } catch (error) {
       console.error("Registration/Login error:", error);
       setEmailError("Error: Email already in use");
