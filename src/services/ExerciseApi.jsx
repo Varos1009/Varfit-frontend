@@ -1,5 +1,8 @@
+import process from "process";
+
 const API_URL = "https://exercisedb.p.rapidapi.com/exercises";
 const API_KEY = process.env.VITE_RAPID_API_KEY || "mocked-api-key";
+
 
 
 export const fetchExercises = async (limit = 100, offset = 0) => {

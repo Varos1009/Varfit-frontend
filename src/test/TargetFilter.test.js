@@ -1,7 +1,10 @@
 jest.mock("../services/ExerciseApi");
 
 // Mock import.meta.env for Jest
-global.importMeta = { env: { VITE_RAPID_API_KEY: "mocked-api-key" } };
+Object.defineProperty(global, "importMeta", {
+  value: { env: { VITE_RAPID_API_KEY: "mocked-api-key" } },
+});
+
 
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
