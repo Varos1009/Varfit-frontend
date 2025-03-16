@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { fetchExercises, fetchTargets } from "../services/ExerciseApi";
 
 const ExerciseList = () => {
-  const [exercises, setExercises] = useState([]); // All exercises
-  const [filteredExercises, setFilteredExercises] = useState([]); // Filtered exercises
-  const [targets, setTargets] = useState([]); // Available target types
-  const [selectedTarget, setSelectedTarget] = useState(""); // Selected target for filtering
-  const [page, setPage] = useState(0); // Pagination state
+  const [exercises, setExercises] = useState([]);
+  const [filteredExercises, setFilteredExercises] = useState([]);
+  const [targets, setTargets] = useState([]);
+  const [selectedTarget, setSelectedTarget] = useState("");
+  const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const limit = 9; // Number of exercises per page
+  const limit = 9; // Exercises per page
 
   // Fetch all exercises
   useEffect(() => {
@@ -19,7 +19,7 @@ const ExerciseList = () => {
       try {
         const data = await fetchExercises();
         setExercises(data);
-        setFilteredExercises(data); // Initially show all exercises
+        setFilteredExercises(data);
       } catch (err) {
         setError("Failed to load exercises.");
       }
@@ -29,7 +29,7 @@ const ExerciseList = () => {
     loadExercises();
   }, []);
 
-  // Fetch target categories
+  // Fetch available targets
   useEffect(() => {
     const loadTargets = async () => {
       const targetList = await fetchTargets();
@@ -39,17 +39,17 @@ const ExerciseList = () => {
     loadTargets();
   }, []);
 
-  // Apply filtering when selectedTarget changes
   useEffect(() => {
     const filtered = selectedTarget
       ? exercises.filter((exercise) => exercise.target.toLowerCase() === selectedTarget.toLowerCase())
       : exercises;
 
     setFilteredExercises(filtered);
-    setPage(0); // Reset to first page on filter change
+
+    setPage(0);
   }, [selectedTarget, exercises]);
 
-  // Get exercises for the current page
+
   const currentPageExercises = filteredExercises.slice(page * limit, (page + 1) * limit);
 
   return (
@@ -81,17 +81,24 @@ const ExerciseList = () => {
         <p className="text-center text-gray-500">No exercises found for the selected target.</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {currentPageExercises.map((exercise) => {
-            
+          {currentPageExercises.map((exercise, index) => {
+            const globalIndex = page * limit + index + 1;
+
             return (
-              <div key={exercise.id} className="bg-white shadow-lg rounded-lg p-4 transition-transform transform hover:scale-105">
+              <div
+                key={exercise.id}
+                className="bg-white shadow-lg rounded-lg p-4 transition-transform transform hover:scale-105"
+              >
+                <h2 className="text-2xl text-gray-900">
+                  {globalIndex}. {exercise.target} - {exercise.id}
+                </h2>
                 <img
                   src={exercise.gifUrl}
-                  alt={exercise.name}
+                  alt={`Exercise demonstration: ${exercise.name}`}
                   className="w-full h-48 object-cover rounded-lg"
+                  loading="lazy"
                 />
                 <h3 className="text-lg font-semibold mt-3">{exercise.name}</h3>
-                <p className="text-gray-500 text-sm">Target: {exercise.target}</p>
               </div>
             );
           })}
