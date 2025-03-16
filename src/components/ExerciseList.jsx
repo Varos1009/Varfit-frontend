@@ -18,6 +18,8 @@ const ExerciseList = () => {
       setLoading(true);
       try {
         const data = await fetchExercises();
+        console.log("Fetched exercises:", data); // Log the fetched data
+
         setExercises(data);
         setFilteredExercises(data);
       } catch (err) {
@@ -82,6 +84,7 @@ const ExerciseList = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {currentPageExercises.map((exercise, index) => {
+            console.log("Exercise gifUrl:", exercise.gifUrl); // Log gifUrl to check it
             const globalIndex = page * limit + index + 1;
 
             return (
@@ -94,7 +97,7 @@ const ExerciseList = () => {
                 </h2>
                 <img
                   src={exercise.gifUrl}
-                  alt={`Exercise demonstration: ${exercise.name}`}
+                  alt={exercise.name}
                   className="w-full h-48 object-cover rounded-lg"
                   loading="lazy"
                 />

@@ -7,7 +7,7 @@ import { useWorkout } from "../context/WorkoutContext"; // Assuming you have thi
 const CreatePlan = () => {
   const { addPlan } = usePlan();
   const { currentUser } = useAuth();
-  const { workouts } = useWorkout(); 
+  const { workouts } = useWorkout();
 
   const navigate = useNavigate();
 
@@ -40,7 +40,10 @@ const CreatePlan = () => {
     const newPlan = {
       userId: currentUser.uid,
       title,
-      workouts: Object.entries(selectedWorkouts).map(([day, workoutId]) => ({ day, workoutId })),
+      workouts: daysOfWeek.map((day) => ({
+        day,
+        workoutId: selectedWorkouts[day] || "No Workout",
+      })),
     };
 
     try {
@@ -103,9 +106,8 @@ const CreatePlan = () => {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className={`w-full p-3 rounded-lg text-white font-semibold ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-          } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          className={`w-full p-3 rounded-lg text-white font-semibold ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
         >
           {loading ? "Creating..." : "Create Plan"}
         </button>
