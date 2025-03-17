@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 const MyPlans = () => {
   const { getAllPlan, plans, loading, error, removePlan } = usePlan();
   const { currentUser } = useAuth();
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // Track which plan is being deleted
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   useEffect(() => {
     if (currentUser?.uid) {
@@ -15,19 +15,18 @@ const MyPlans = () => {
   }, [currentUser]);
 
   const handleDeleteClick = (planId) => {
-    setDeleteConfirm(planId); // Show delete confirmation for this plan
+    setDeleteConfirm(planId);
   };
 
   const handleCancelDelete = () => {
-    setDeleteConfirm(null); // Hide delete confirmation
+    setDeleteConfirm(null);
   };
 
   const handleConfirmDelete = async (planId) => {
     try {
       await removePlan(planId);
-      setDeleteConfirm(null); // Hide confirmation after deleting
+      setDeleteConfirm(null);
     } catch (err) {
-      console.error("Failed to delete plan", err);
     }
   };
 
@@ -35,13 +34,13 @@ const MyPlans = () => {
   if (error) return <div className="text-center text-xl font-semibold text-red-500">{error}</div>;
 
   return (
-    <div className="max-w-5xl mx-auto mt-25 p-8 bg-gradient-to-r from-indigo-600 via-purple-700 to-pink-600 rounded-xl shadow-lg">
+    <div className="max-w-2xl mx-auto mt-25 p-8 ">
 
       {/* Create New Plan Button */}
       <div className="text-center mb-6">
         <Link
           to="/createplan"
-          className="inline-block px-10 py-4 bg-green-500 text-white text-lg font-bold rounded-full 
+          className="inline-block px-10 py-4 bg-red-500 text-white text-lg font-bold rounded-full 
           shadow-lg hover:bg-green-600 transition duration-300 transform hover:scale-110 hover:shadow-xl"
         >
           ➕ Create New Plan

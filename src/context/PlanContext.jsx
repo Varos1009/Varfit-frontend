@@ -8,68 +8,58 @@ export const usePlan = () => {
 };
 
 export const PlanProvider = ({ children }) => {
-  const [plans, setPlans] = useState([]); // Use an array for multiple plans
-  const [loading, setLoading] = useState(false); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
 
-  const getPlan = async (id) => {  // ✅ Only pass planId
+  const getPlan = async (id) => {
     if (!id) {
-      console.error("❌ Missing planId in getPlan");
       setError("Plan ID is missing.");
       return;
     }
-  
+
     setLoading(true);
     try {
-      const response = await fetchPlan(id); // ✅ Fetch using planId
-  
-      console.log("✅ Fetched plan:", response);
-      
+      const response = await fetchPlan(id);
+
       setPlans(response);
-  
+
     } catch (err) {
       setError("Error fetching the plan.");
-      console.error("❌ Error fetching the plan:", err);
     } finally {
       setLoading(false);
     }
   };
-  
 
+  // ✅ Fetch all plans in the database
+  const getAllPlan = async (userId) => {
+    if (!userId) {
+      setError?.("User ID is missing.");
+      return null;
+    }
 
-// ✅ Fetch all plans in the database
-const getAllPlan = async (userId) => {
-  if (!userId) {
-    console.error("❌ Missing userId in getAllPlan");
-    setError?.("User ID is missing.");
-    return null; // Return null to avoid undefined errors
-  }
+    setLoading?.(true);
+    try {
+      const response = await getAllPlans(userId);
+      console.log("✅ Fetched all plans:", response);
 
-  setLoading?.(true);
-  try {
-    const response = await getAllPlans(userId); // 🔥 Ensure this function is correctly defined
-    console.log("✅ Fetched all plans:", response);
-
-    setPlans?.(response); // Update context state if applicable
-    return response; // Return the data so it can be used immediately
-  } catch (err) {
-    setError?.("Error fetching all plans.");
-    console.error("❌ Error fetching all plans:", err);
-    return null;
-  } finally {
-    setLoading?.(false);
-  }
-};
-
-
+      setPlans?.(response);
+      return response;
+    } catch (err) {
+      setError?.("Error fetching all plans.");
+      return null;
+    } finally {
+      setLoading?.(false);
+    }
+  };
 
   // Create a new plan
   const addPlan = async (newPlan) => {
     setLoading(true);
     try {
       const response = await createPlan(newPlan);
-      setPlans((prevPlans) => [...prevPlans, response]); // Add new plan to the state
+      setPlans((prevPlans) => [...prevPlans, response]);
     } catch (err) {
       setError("Error creating the plan.");
     } finally {
@@ -84,7 +74,7 @@ const getAllPlan = async (userId) => {
       const response = await updatePlan(updatedPlan);
       setPlans((prevPlans) =>
         prevPlans.map((plan) => (plan._id === updatedPlan._id ? response : plan))
-      ); // Update the plan in the state
+      );
     } catch (err) {
       setError("Error updating the plan.");
     } finally {

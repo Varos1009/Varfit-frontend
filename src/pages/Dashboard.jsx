@@ -76,18 +76,18 @@ const Dashboard = () => {
   const updateWorkoutsForSelectedDay = (date) => {
     if (!plan || !plan.workouts) return;
 
-    const dayOfWeek = format(date, "EEEE");  // Get full name of the day (e.g., "Monday")
+    const dayOfWeek = format(date, "EEEE");
     const plannedWorkouts = plan.workouts.filter((workout) => workout.day === dayOfWeek);
     const detailedWorkouts = plannedWorkouts
       .map((workout) => workouts.find((w) => w._id === workout.workoutId))
-      .filter(Boolean);  // Remove any undefined values
+      .filter(Boolean);
 
-    setWorkoutsForDay(detailedWorkouts);  // Update the workouts for the day
+    setWorkoutsForDay(detailedWorkouts);
   };
 
   useEffect(() => {
     if (plan) {
-      updateWorkoutsForSelectedDay(selectedDate);  // Update workouts when the plan or date changes
+      updateWorkoutsForSelectedDay(selectedDate);
     }
   }, [plan, selectedDate]);
 

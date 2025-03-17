@@ -26,9 +26,9 @@ const VarFitLogo = () => {
             values="1;1.2;1"
             dur="1.6s"
             repeatCount="indefinite"
-            transformOrigin="50% 50%" 
+            transformOrigin="50% 50%"
           />
-          
+
           {/* Color change animation */}
           <animate
             attributeName="stroke"

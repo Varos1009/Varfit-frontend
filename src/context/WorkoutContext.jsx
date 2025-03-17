@@ -14,7 +14,6 @@ export const WorkoutProvider = ({ children }) => {
   // Function to fetch workouts
   const fetchWorkouts = async () => {
     if (!userLoggedIn) {
-      console.log("No user logged in, skipping workout fetch");
       setLoading(false);
       return;
     }
@@ -22,12 +21,10 @@ export const WorkoutProvider = ({ children }) => {
     try {
       const userId = localStorage.getItem("userId");
       if (userId) {
-        console.log("Fetching workouts for user:", userId);
         const fetchedWorkouts = await getWorkoutsByUser(userId);
         setWorkouts(fetchedWorkouts);
       }
     } catch (error) {
-      console.error("Error fetching workouts:", error);
     } finally {
       setLoading(false);
     }

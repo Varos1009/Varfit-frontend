@@ -11,12 +11,11 @@ export const getWorkoutsByUser = async (userId) => {
 
   try {
     console.log("Fetching workouts for user:", userId);
-    
-    // ✅ Fetch only the workouts belonging to the logged-in user
+
+    //  Fetch only the workouts belonging to the logged-in user
     const response = await axios.get(`${API_URL}/user/${userId}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching workouts:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -28,7 +27,6 @@ export const createWorkout = async (workoutData) => {
     const response = await axios.post(API_URL, workoutData);
     return response.data;
   } catch (error) {
-    console.error("Workout API error:", error.response?.data || error);
     throw new Error(error.response?.data?.message || "Error creating workout.");
   }
 };
@@ -48,7 +46,6 @@ export const updateWorkouts = async (id, updatedWorkout, userId) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error updating workout", error);
     throw error;
   }
 };
@@ -62,7 +59,6 @@ export const deleteWorkout = async (id) => {
     }
     throw new Error("Invalid response format");
   } catch (error) {
-    console.error(`Error deleting workout with ID ${id}:`, error);
     throw new Error("Error deleting workout");
   }
 };

@@ -44,7 +44,6 @@ function SignUp() {
 
       navigate("/");
     } catch (error) {
-      console.error("Registration/Login error:", error);
       setEmailError("Error: Email already in use");
       setIsRegister(false);
     }
@@ -56,7 +55,7 @@ function SignUp() {
       <div className="bg-white p-8 rounded-xl shadow-lg max-w-sm w-full">
         <h2 className="text-3xl font-bold text-center text-blue-900 mb-0 mt-2 md:mb-3">Create an Account</h2>
 
-        {emailError &&  <div className="bg-red-500 text-white text-sm p-3 rounded mb-4 text-center">{emailError}</div>}
+        {emailError && <div className="bg-red-500 text-white text-sm p-3 rounded mb-4 text-center">{emailError}</div>}
         {passwordError && <div className="bg-red-500 text-white text-sm p-3 rounded mb-4 text-center">{passwordError}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-5">

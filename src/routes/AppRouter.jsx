@@ -23,7 +23,7 @@ const AppRouter = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUp />} />
 
-        {/* Rutas protegidas solo para usuarios logueados */}
+        {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/workouts" element={<Workout />} />

@@ -5,27 +5,23 @@ import DeleteWorkoutModal from "./DeleteWorkoutModal";
 import { deleteWorkout } from "../services/WorkoutService";
 
 const WorkoutList = () => {
-  const { workouts, loading, refreshWorkouts } = useWorkout(); // ✅ Get deleteWorkout function from context
-  console.log("Workouts in WorkoutList:", workouts); // ✅ Debugging log
+  const { workouts, loading, refreshWorkouts } = useWorkout();
   const [selectedWorkout, setSelectedWorkout] = React.useState(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   if (loading) return <p>Loading...</p>;
   if (!Array.isArray(workouts)) {
-    console.error("Workouts is not an array:", workouts);
     return <div>Error: Workouts data is not an array!</div>;
   }
 
   if (workouts.length === 0) {
-    console.warn("Workouts array is empty!");
     return <div>No workouts found.</div>;
   }
 
-  // Handle delete confirmation
   const handleDeleteConfirm = async () => {
     if (!selectedWorkout) return;
     try {
-      await deleteWorkout(selectedWorkout._id); // Call delete function from context
+      await deleteWorkout(selectedWorkout._id);
       setIsModalOpen(false);
       setSelectedWorkout(null);
       refreshWorkouts();
@@ -46,7 +42,6 @@ const WorkoutList = () => {
             {/* Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-br from-blue-300 via-purple-300 to-pink-300 opacity-20 hover:opacity-30 transition-all"></div>
 
-            {/* Workout Name */}
             <h3 className="text-2xl font-bold text-center text-blue-700 relative z-10">
               {workout.name}
             </h3>
@@ -65,6 +60,7 @@ const WorkoutList = () => {
 
             {/* Buttons Section */}
             <div className="mt-6 flex justify-between items-center space-x-3">
+
               {/* Edit Button */}
               <Link
                 to={`/workouts/edit/${workout._id}`}

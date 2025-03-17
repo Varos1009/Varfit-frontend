@@ -10,15 +10,13 @@ const ExerciseList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const limit = 9; // Exercises per page
+  const limit = 9;
 
-  // Fetch all exercises
   useEffect(() => {
     const loadExercises = async () => {
       setLoading(true);
       try {
         const data = await fetchExercises();
-        console.log("Fetched exercises:", data); // Log the fetched data
 
         setExercises(data);
         setFilteredExercises(data);
@@ -31,7 +29,6 @@ const ExerciseList = () => {
     loadExercises();
   }, []);
 
-  // Fetch available targets
   useEffect(() => {
     const loadTargets = async () => {
       const targetList = await fetchTargets();
@@ -84,7 +81,6 @@ const ExerciseList = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {currentPageExercises.map((exercise, index) => {
-            console.log("Exercise gifUrl:", exercise.gifUrl); // Log gifUrl to check it
             const globalIndex = page * limit + index + 1;
 
             return (

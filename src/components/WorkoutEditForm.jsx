@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWorkout } from "../context/WorkoutContext";
-import { updateWorkouts } from "../services/WorkoutService"; // make sure this function is available
+import { updateWorkouts } from "../services/WorkoutService";
 
 const WorkoutEditForm = (handle) => {
-    const { id } = useParams(); // Get the workout ID from the URL
+    const { id } = useParams();
     const [workout, setWorkout] = useState({
         name: "",
         duration: "",
@@ -15,18 +15,15 @@ const WorkoutEditForm = (handle) => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
     const { workouts, refreshWorkouts } = useWorkout();
-    const userId = localStorage.getItem("userId"); // Assume userId is stored in localStorage
+    const userId = localStorage.getItem("userId");
 
     useEffect(() => {
-        // Find the workout by its ID
         const workoutToEdit = workouts.find((w) => w._id === id);
 
         if (workoutToEdit) {
             setWorkout(workoutToEdit);
             setLoading(false);
         } else {
-            // If workout is not found, redirect or show an error message
-            console.error("Workout not found");
             setLoading(false);
             setError("Workout not found!");
         }
@@ -42,10 +39,9 @@ const WorkoutEditForm = (handle) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // Reset any previous error
+        setError("");
 
         try {
-            // Call the update function and pass the data
             await updateWorkouts(id, workout, userId);
             setSuccess("Workout updated successfully!");
             setLoading(false);
@@ -53,7 +49,6 @@ const WorkoutEditForm = (handle) => {
             refreshWorkouts();
             setTimeout(() => navigate("/workouts"), 1500);
         } catch (error) {
-            console.error("Failed to update workout:", error);
             setLoading(false);
         }
     };
@@ -67,7 +62,7 @@ const WorkoutEditForm = (handle) => {
 
                 {/* Show error message */}
                 {error && <p className="text-red-500 text-center">{error}</p>}
-                
+
                 {/* Show success message */}
                 {success && <p className="text-green-500 text-center">{success}</p>}
 

@@ -5,23 +5,19 @@ import { useWorkout } from "../context/WorkoutContext";
 
 const ViewEditPlan = () => {
     const { id } = useParams();
-    const { workouts } = useWorkout(); // Fetch available workouts from context
-    const { getPlan, plans, loading, error } = usePlan(); // Plan context for fetching plan
+    const { workouts } = useWorkout();
+    const { getPlan, plans, loading, error } = usePlan();
 
     const [resolvedWorkouts, setResolvedWorkouts] = useState([]);
 
-    // Fetch the plan when the component mounts
     useEffect(() => {
         if (id) {
-            console.log("Fetching plan for Plan ID:", id);
-            getPlan(id); // Fetch the plan with the given ID
+            getPlan(id);
         }
     }, [id]);
 
-    // Resolve workout names from the workouts context
     useEffect(() => {
         if (plans && workouts) {
-            // Resolve workout names based on the workoutId
             const resolved = plans.workouts?.map((workout) => {
                 const workoutDetails = workouts.find((w) => w._id === workout.workoutId);
                 return {
@@ -33,23 +29,20 @@ const ViewEditPlan = () => {
         }
     }, [plans, workouts]);
 
-    // Loading and error handling
     if (loading) return <div className="text-center text-xl font-medium text-blue-500">Loading plan...</div>;
     if (error) return <div className="text-center text-xl font-medium text-red-500">{error}</div>;
 
-    // If no plan is found
     if (!plans) {
         return <div className="text-center text-xl font-medium text-gray-500">No plan found.</div>;
     }
 
-    // Group workouts by days if resolvedWorkouts is available
     const workoutsList = resolvedWorkouts || [];
     const groupedWorkouts = workoutsList.reduce((acc, workout) => {
         const day = workout.day;
         if (!acc[day]) {
             acc[day] = [];
         }
-        acc[day].push(workout.name); // Group workout by the day
+        acc[day].push(workout.name);
         return acc;
     }, {});
 
@@ -59,7 +52,7 @@ const ViewEditPlan = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-xl shadow-lg">
+        <div className="max-w-4xl mx-auto p-8 mt-21">
             <h2 className="text-4xl font-bold text-white text-center mb-6">
                 Plan Details
             </h2>

@@ -23,42 +23,38 @@ const WorkoutForm = () => {
     e.preventDefault();
 
     if (!currentUser) {
-        setError("You must be logged in to add a workout.");
-        return;
+      setError("You must be logged in to add a workout.");
+      return;
     }
 
     if (!formData.name.trim() || !formData.duration) {
-        setError("Please fill out all fields.");
-        return;
+      setError("Please fill out all fields.");
+      return;
     }
 
     const newWorkout = {
-        name: formData.name.trim(),
-        duration: parseInt(formData.duration, 10), // Ensure it's a valid number
-        difficulty: formData.difficulty,
-        userId: currentUser.uid, // Ensure userId is included
+      name: formData.name.trim(),
+      duration: parseInt(formData.duration, 10),
+      difficulty: formData.difficulty,
+      userId: currentUser.uid,
     };
 
-    console.log("Submitting workout:", newWorkout); // Debugging
-
     try {
-        const createdWorkout = await createWorkout(newWorkout);
-        setSuccess("Workout created successfully!");
-        setError("");
+      const createdWorkout = await createWorkout(newWorkout);
+      setSuccess("Workout created successfully!");
+      setError("");
 
-        setWorkouts([...workouts, createdWorkout]);
+      setWorkouts([...workouts, createdWorkout]);
 
-        setFormData({ name: "", duration: "", difficulty: "Beginner" });
+      setFormData({ name: "", duration: "", difficulty: "Beginner" });
 
-        // Hide success message after 2 seconds
-        setTimeout(() => {
-            setSuccess("");
-        }, 1500);
+      setTimeout(() => {
+        setSuccess("");
+      }, 1500);
     } catch (error) {
-        console.error("Error creating workout:", error.response?.data || error);
-        setError(error.response?.data?.errors?.[0]?.msg || "Error creating workout.");
+      setError(error.response?.data?.errors?.[0]?.msg || "Error creating workout.");
     }
-};
+  };
 
 
   return (
@@ -79,7 +75,7 @@ const WorkoutForm = () => {
           required
         />
 
-        
+
         <input
           type="number"
           name="duration"

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { fetchTargets } from "../services/ExerciseApi";
 
 const TargetFilter = ({ onFilterChange }) => {
-  const [targets, setTargets] = useState([]); // Available target types
-  const [selectedTarget, setSelectedTarget] = useState(""); // Selected target
+  const [targets, setTargets] = useState([]);
+  const [selectedTarget, setSelectedTarget] = useState("");
 
   useEffect(() => {
     const loadTargets = async () => {
@@ -17,7 +17,7 @@ const TargetFilter = ({ onFilterChange }) => {
   const handleChange = (e) => {
     const newTarget = e.target.value;
     setSelectedTarget(newTarget);
-    onFilterChange(newTarget); // Pass selected target to parent
+    onFilterChange(newTarget);
   };
 
   return (

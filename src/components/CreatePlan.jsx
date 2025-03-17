@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePlan } from "../context/PlanContext";
 import { useAuth } from "../context/AuthContext";
-import { useWorkout } from "../context/WorkoutContext"; // Assuming you have this context
+import { useWorkout } from "../context/WorkoutContext";
 
 const CreatePlan = () => {
   const { addPlan } = usePlan();
