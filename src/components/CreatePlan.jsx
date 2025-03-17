@@ -16,6 +16,7 @@ const CreatePlan = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [workoutError, setWorkoutError] = useState("");
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -34,24 +35,36 @@ const CreatePlan = () => {
       return;
     }
 
+    const allWorkoutsSelected = daysOfWeek.every((day) => selectedWorkouts[day]);
+    if (!allWorkoutsSelected) {
+      setWorkoutError("Select a workout for each day.");
+      setTimeout(() => setWorkoutError(""), 4000);
+      return;
+    }
+
     setLoading(true);
     setError("");
+    setWorkoutError("");
 
     const newPlan = {
       userId: currentUser.uid,
       title,
       workouts: daysOfWeek.map((day) => ({
         day,
-        workoutId: selectedWorkouts[day] || "No Workout",
+        workoutId: selectedWorkouts[day],
       })),
     };
 
     try {
       await addPlan(newPlan);
-      setSuccess("Plan created successfully!");
+      setSuccess("Plan successfully created!");
       setTitle("");
       setSelectedWorkouts({});
-      navigate("/plan");
+
+      setTimeout(() => {
+        setSuccess("");
+        navigate("/plan");
+      }, 1500);
     } catch (err) {
       setError("Failed to create plan. Please try again.");
     } finally {
@@ -81,6 +94,9 @@ const CreatePlan = () => {
         />
       </div>
 
+      {/* Workout Selection Error Message */}
+      {workoutError && <p className="text-red-500 text-sm mb-2">{workoutError}</p>}
+
       {/* Days of Week Workouts */}
       <div className="space-y-3 mb-6">
         {daysOfWeek.map((day) => (
@@ -93,7 +109,7 @@ const CreatePlan = () => {
               <option value="">Select Workout</option>
               {workouts?.map((workout) => (
                 <option key={workout._id} value={workout._id}>
-                  {workout.name || 'Unnamed Workout'}
+                  {workout.name || "Unnamed Workout"}
                 </option>
               ))}
             </select>
