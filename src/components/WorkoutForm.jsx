@@ -8,6 +8,7 @@ const WorkoutForm = () => {
   const { workouts, setWorkouts } = useWorkout();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showInfo, setShowInfo] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -56,14 +57,30 @@ const WorkoutForm = () => {
     }
   };
 
-
   return (
-    <div className="flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center">
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-blue-900 mb-4">Add Workout</h2>
 
         {error && <p className="text-red-500 text-center">{error}</p>}
         {success && <p className="text-green-500 text-center">{success}</p>}
+
+        <div className="flex items-center justify-between w-full mb-3">
+          <label className="text-gray-700 font-semibold">Workout Name</label>
+          <button
+            type="button"
+            className="text-blue-500 hover:text-blue-700"
+            onClick={() => setShowInfo(!showInfo)}
+          >
+            ℹ️
+          </button>
+        </div>
+
+        {showInfo && (
+          <p className="text-gray-600 text-sm mb-3 bg-gray-100 p-2 rounded-lg">
+            Create 7 workouts for every day of the week, or you can use one workout for different days.
+          </p>
+        )}
 
         <input
           type="text"
@@ -74,7 +91,6 @@ const WorkoutForm = () => {
           className="w-full p-3 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />
-
 
         <input
           type="number"
